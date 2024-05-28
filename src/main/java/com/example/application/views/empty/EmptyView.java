@@ -1,30 +1,39 @@
 package com.example.application.views.empty;
 
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
+import com.example.application.data.models.Employee;
+import com.example.application.data.models.Project;
+import com.example.application.data.models.TimeEntry;
+import com.example.application.data.services.TimesService;
+
+import java.util.List;
 
 @PageTitle("Empty")
 @Route(value = "")
 @RouteAlias(value = "")
 public class EmptyView extends VerticalLayout {
+    TimesService service;
 
-    public EmptyView() {
-        setSpacing(false);
+    public EmptyView(TimesService service) {
+        this.service = service;
+        List<Employee> employeeList = service.getAllEmployees(); 
+        List<TimeEntry> timesList = service.getAllTimes();
+        System.out.println(timesList.get(1).toString());
+        
+    
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
-        img.setWidth("200px");
-        add(img);
+        System.out.println(employeeList.get(0).getName());
+        Employee[] array = new Employee[employeeList.size()];
+        employeeList.toArray(array);
+        Select<Employee> select = new Select<>();
+        select.setLabel("Sort by");
+        select.setItems(array);
 
-        H2 header = new H2("This place intentionally left empty");
-        header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
-        add(header);
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        add(select);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
