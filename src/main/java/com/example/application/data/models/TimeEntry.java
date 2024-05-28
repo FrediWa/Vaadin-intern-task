@@ -17,9 +17,11 @@ import com.example.application.data.models.Project;
 @Table(name = "times")
 public class TimeEntry extends AbstractEntity {
     
-    @NotEmpty
-    @Column(name = "employee_id")
-    private int employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    @NotNull
+    @JsonIgnoreProperties({"employees"})
+    private Employee employee;
     
     @NotEmpty
     @Column(name = "start_date")
@@ -33,7 +35,7 @@ public class TimeEntry extends AbstractEntity {
     @Column(name = "end_time")
     private String endTime = "";
 
-     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "project_id")
     @NotNull
     @JsonIgnoreProperties({"projects"})
@@ -43,4 +45,12 @@ public class TimeEntry extends AbstractEntity {
     public String toString() {
         return project.toString();
     }
+
+    public String getEmployeeName() { return employee.toString(); }
+    public Employee getEmployee() { return employee; }
+    public String getStartTime() { return startTime; }
+    public String getEndTime() { return endTime; }
+    public String getStartDate() { return startDate; }
+    public String getProjectName() { return project.toString(); }
+    public Project getProject() { return project; }
 } 

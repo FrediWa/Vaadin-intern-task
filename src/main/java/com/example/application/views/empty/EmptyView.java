@@ -10,6 +10,8 @@ import com.example.application.data.models.Project;
 import com.example.application.data.models.TimeEntry;
 import com.example.application.data.services.TimesService;
 
+import com.example.application.components.WorkLogRow;
+
 import java.util.List;
 
 @PageTitle("Empty")
@@ -21,11 +23,11 @@ public class EmptyView extends VerticalLayout {
     public EmptyView(TimesService service) {
         this.service = service;
         List<Employee> employeeList = service.getAllEmployees(); 
+        List<Project> projectList = service.getAllProjects(); 
         List<TimeEntry> timesList = service.getAllTimes();
-        System.out.println(timesList.get(1).toString());
         
-    
-
+        WorkLogRow row = new WorkLogRow(timesList.get(0), employeeList, projectList);
+        add(row);
         System.out.println(employeeList.get(0).getName());
         Employee[] array = new Employee[employeeList.size()];
         employeeList.toArray(array);

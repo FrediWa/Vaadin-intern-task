@@ -1,6 +1,7 @@
 package com.example.application.data.services;
 
 import com.example.application.data.models.Employee;
+import com.example.application.data.models.Project;
 import com.example.application.data.models.TimeEntry;
 
 import com.example.application.data.EmployeeRepository;
@@ -31,6 +32,9 @@ public class TimesService {
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
+    }
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
     }
     public List<TimeEntry> getAllTimes() {
         return timesRepository.findAll();
