@@ -1,5 +1,8 @@
 package com.example.application.data.models;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import com.example.application.data.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -22,16 +25,24 @@ public class WorkLog extends AbstractEntity {
     private Employee employee;
     
     @NotEmpty
-    @Column(name = "start_date")
-    private String startDate = "";
-
-    @NotEmpty
     @Column(name = "start_time")
-    private String startTime = "";
+    private LocalTime startTime;
 
     @NotEmpty
-    @Column(name = "end_time")
-    private String endTime = "";
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @NotEmpty
+    @Column(name = "description")
+    private String description;
+
+    @NotEmpty
+    @Column(name = "minutes")
+    private int minutes;
+
+    @NotEmpty
+    @Column(name = "absent")
+    private int absent;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
@@ -46,9 +57,11 @@ public class WorkLog extends AbstractEntity {
 
     public String getEmployeeName() { return employee.toString(); }
     public Employee getEmployee() { return employee; }
-    public String getStartTime() { return startTime; }
-    public String getEndTime() { return endTime; }
-    public String getStartDate() { return startDate; }
+    public LocalTime getStartTime() { return startTime; }
+    public LocalDate getStartDate() { return startDate; }
+    public String getDescription() { return description; }
     public String getProjectName() { return project.toString(); }
     public Project getProject() { return project; }
+    public int getMinutes() { return minutes;}
+    public int getAbsent() { return absent;}
 } 
