@@ -1,9 +1,11 @@
 package com.example.application.components;
 
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.timepicker.TimePicker;
 
@@ -27,20 +29,40 @@ public class WorkLogRow extends Composite<Div> {
     DatePicker          datePicker          = new DatePicker();
     LocalTime           startTime;
     LocalTime           endTime;
+    Dialog              deleteDialog        = new Dialog();
+    Button              deleteButton        = new Button("Delete", e -> deleteDialog.open());
+    Button              confirmButton       = new Button("Delete", e -> {handleDelete(); deleteDialog.close();});
+    Button              cancelButton        = new Button("Cancel", e -> deleteDialog.close());
+    long                workLogId;
 
-    public void updateAllowEdit(boolean readonly ) {
-        employeeDropdown.setReadOnly(readOnly);
-        projectDropdown.setReadOnly(readOnly);
-        startTimePicker.setReadOnly(readOnly);
-        endTimePicker.setReadOnly(readOnly);
-        datePicker.setReadOnly(readOnly);
+    private void updateAllowEdit(boolean enabled) {
+        employeeDropdown.setEnabled(enabled);
+        projectDropdown.setEnabled(enabled);
+        startTimePicker.setEnabled(enabled);
+        endTimePicker.setEnabled(enabled);
+        datePicker.setEnabled(enabled);
     }
-    
+
+    private void handleDelete() {
+        // ...
+    }
+
+    private void handleEdit() {
+        // ...
+    }
+
     Checkbox readOnlySelector = new Checkbox();
-    // readOnlySelector.setLabel("Edit fields");
-    boolean readOnly = !(readOnlySelector.getValue());
+    // Ok what is up with this
+    // readOnlySelector.setLabel("Edit");
+    boolean enabled = (readOnlySelector.getValue());
     
     public WorkLogRow(WorkLog workLogEntry, List<Employee> employees, List<Project> projects) {
+        workLogId = workLogEntry.getId();
+
+        deleteDialog.setHeaderTitle("Confirm entry deletion");
+        deleteDialog.getFooter().add(cancelButton);
+        deleteDialog.getFooter().add(confirmButton);
+
         employeeDropdown.setItems(employees);
         projectDropdown.setItems(projects);
         
@@ -55,15 +77,15 @@ public class WorkLogRow extends Composite<Div> {
         startTimePicker.setStep(Duration.ofMinutes(15));
         endTimePicker.setStep(Duration.ofMinutes(15));
 
-        employeeDropdown.setReadOnly(readOnly);
-        projectDropdown.setReadOnly(readOnly);
-        startTimePicker.setReadOnly(readOnly);
-        endTimePicker.setReadOnly(readOnly);
-        datePicker.setReadOnly(readOnly);
+        employeeDropdown.setEnabled(enabled);
+        projectDropdown.setEnabled(enabled);
+        startTimePicker.setEnabled(enabled);
+        endTimePicker.setEnabled(enabled);
+        datePicker.setEnabled(enabled);
 
         readOnlySelector.addValueChangeListener(e -> {
-            readOnly = !(e.getValue());
-            updateAllowEdit(readOnly);
+            enabled = e.getValue();
+            updateAllowEdit(enabled);
         });
 
         getContent().add(projectDropdown, 
@@ -71,6 +93,7 @@ public class WorkLogRow extends Composite<Div> {
             startTimePicker,
             endTimePicker,
             datePicker,
+            deleteButton,
             readOnlySelector);
     }
 

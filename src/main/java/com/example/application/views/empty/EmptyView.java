@@ -31,15 +31,6 @@ public class EmptyView extends VerticalLayout {
             add(row);
         }
 
-        System.out.println(employeeList.get(0).getName());
-        Employee[] array = new Employee[employeeList.size()];
-        employeeList.toArray(array);
-        Select<Employee> select = new Select<>();
-        select.setLabel("Sort by");
-        select.setItems(array);
-
-        add(select);
-
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
