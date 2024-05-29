@@ -35,12 +35,12 @@ public class WorkLogRow extends Composite<Div> {
     Button              cancelButton        = new Button("Cancel", e -> deleteDialog.close());
     long                workLogId;
 
-    private void updateAllowEdit(boolean enabled) {
-        employeeDropdown.setEnabled(enabled);
-        projectDropdown.setEnabled(enabled);
-        startTimePicker.setEnabled(enabled);
-        endTimePicker.setEnabled(enabled);
-        datePicker.setEnabled(enabled);
+    private void updateAllowEdit(boolean readonly) {
+        employeeDropdown.setReadOnly(readonly);
+        projectDropdown.setReadOnly(readonly);
+        startTimePicker.setReadOnly(readonly);
+        endTimePicker.setReadOnly(readonly);
+        datePicker.setReadOnly(readonly);
     }
 
     private void handleDelete() {
@@ -54,7 +54,7 @@ public class WorkLogRow extends Composite<Div> {
     Checkbox readOnlySelector = new Checkbox();
     // Ok what is up with this
     // readOnlySelector.setLabel("Edit");
-    boolean enabled = (readOnlySelector.getValue());
+    boolean readonly = !(readOnlySelector.getValue());
     
     public WorkLogRow(WorkLog workLogEntry, List<Employee> employees, List<Project> projects) {
         workLogId = workLogEntry.getId();
@@ -77,15 +77,15 @@ public class WorkLogRow extends Composite<Div> {
         startTimePicker.setStep(Duration.ofMinutes(15));
         endTimePicker.setStep(Duration.ofMinutes(15));
 
-        employeeDropdown.setEnabled(enabled);
-        projectDropdown.setEnabled(enabled);
-        startTimePicker.setEnabled(enabled);
-        endTimePicker.setEnabled(enabled);
-        datePicker.setEnabled(enabled);
+        employeeDropdown.setReadOnly(readonly);
+        projectDropdown.setReadOnly(readonly);
+        startTimePicker.setReadOnly(readonly);
+        endTimePicker.setReadOnly(readonly);
+        datePicker.setReadOnly(readonly);
 
         readOnlySelector.addValueChangeListener(e -> {
-            enabled = e.getValue();
-            updateAllowEdit(enabled);
+            readonly = !(e.getValue());
+            updateAllowEdit(readonly);
         });
 
         getContent().add(projectDropdown, 
