@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class WorkLogRow extends Composite<Div> {
+
     
     ComboBox<Project>   projectDropdown     = new ComboBox<Project>();
     ComboBox<Employee>  employeeDropdown    = new ComboBox<Employee>();
@@ -27,10 +28,18 @@ public class WorkLogRow extends Composite<Div> {
     DatePicker          datePicker          = new DatePicker();
     LocalTime           startTime;
     LocalTime           endTime;
+
+    public void updateAllowEdit(boolean readonly ) {
+        employeeDropdown.setReadOnly(readOnly);
+        projectDropdown.setReadOnly(readOnly);
+        startTimePicker.setReadOnly(readOnly);
+        endTimePicker.setReadOnly(readOnly);
+        datePicker.setReadOnly(readOnly);
+    }
     
     Checkbox readOnlySelector = new Checkbox();
     // readOnlySelector.setLabel("Edit fields");
-    boolean readOnly = readOnlySelector.getValue();
+    boolean readOnly = !(readOnlySelector.getValue());
     
     public WorkLogRow(TimeEntry workLogEntry, List<Employee> employees, List<Project> projects) {
         employeeDropdown.setItems(employees);
@@ -49,6 +58,14 @@ public class WorkLogRow extends Composite<Div> {
 
         employeeDropdown.setReadOnly(readOnly);
         projectDropdown.setReadOnly(readOnly);
+        startTimePicker.setReadOnly(readOnly);
+        endTimePicker.setReadOnly(readOnly);
+        datePicker.setReadOnly(readOnly);
+
+        readOnlySelector.addValueChangeListener(e -> {
+            readOnly = !(e.getValue());
+            updateAllowEdit(readOnly);
+        });
 
         getContent().add(projectDropdown, 
             employeeDropdown,

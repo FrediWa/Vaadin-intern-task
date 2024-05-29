@@ -25,9 +25,12 @@ public class EmptyView extends VerticalLayout {
         List<Employee> employeeList = service.getAllEmployees(); 
         List<Project> projectList = service.getAllProjects(); 
         List<TimeEntry> timesList = service.getAllTimes();
+
+        for (TimeEntry workLogEntry : timesList) {
+            WorkLogRow row = new WorkLogRow(workLogEntry, employeeList, projectList);
+            add(row);
+        }
         
-        WorkLogRow row = new WorkLogRow(timesList.get(0), employeeList, projectList);
-        add(row);
         System.out.println(employeeList.get(0).getName());
         Employee[] array = new Employee[employeeList.size()];
         employeeList.toArray(array);
