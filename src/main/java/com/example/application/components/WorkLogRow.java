@@ -6,12 +6,14 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.timepicker.TimePicker;
-
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.example.application.data.models.Project;
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.WorkLog;
+import com.vaadin.flow.data.binder.Binder;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -19,9 +21,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class WorkLogRow extends Composite<Div> {
-
-    
+public class WorkLogRow extends FormLayout {
     ComboBox<Project>   projectDropdown     = new ComboBox<Project>();
     ComboBox<Employee>  employeeDropdown    = new ComboBox<Employee>();
     TimePicker          startTimePicker     = new TimePicker();
@@ -34,6 +34,7 @@ public class WorkLogRow extends Composite<Div> {
     Button              confirmButton       = new Button("Delete", e -> {handleDelete(); deleteDialog.close();});
     Button              cancelButton        = new Button("Cancel", e -> deleteDialog.close());
     long                workLogId;
+    Binder<WorkLog> binder = new BeanValidationBinder<>(WorkLog.class);
 
     private void updateAllowEdit(boolean readonly) {
         employeeDropdown.setReadOnly(readonly);
@@ -51,12 +52,12 @@ public class WorkLogRow extends Composite<Div> {
         // ...
     }
 
-    Checkbox readOnlySelector = new Checkbox();
-    // Ok what is up with this
-    // readOnlySelector.setLabel("Edit");
+    Checkbox readOnlySelector = new Checkbox("Label");
+
     boolean readonly = !(readOnlySelector.getValue());
     
     public WorkLogRow(WorkLog workLogEntry, List<Employee> employees, List<Project> projects) {
+        // binder.bindInstanceFields(this);
         workLogId = workLogEntry.getId();
 
         deleteDialog.setHeaderTitle("Confirm entry deletion");
@@ -88,7 +89,7 @@ public class WorkLogRow extends Composite<Div> {
             updateAllowEdit(readonly);
         });
 
-        getContent().add(projectDropdown, 
+        add(projectDropdown, 
             employeeDropdown,
             startTimePicker,
             endTimePicker,
