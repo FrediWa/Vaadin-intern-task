@@ -7,8 +7,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
-import com.example.application.data.models.TimeEntry;
-import com.example.application.data.services.TimesService;
+import com.example.application.data.models.WorkLog;
+import com.example.application.data.services.WorkLogService;
 
 import com.example.application.components.WorkLogRow;
 
@@ -18,19 +18,19 @@ import java.util.List;
 @Route(value = "")
 @RouteAlias(value = "")
 public class EmptyView extends VerticalLayout {
-    TimesService service;
+    WorkLogService service;
 
-    public EmptyView(TimesService service) {
+    public EmptyView(WorkLogService service) {
         this.service = service;
         List<Employee> employeeList = service.getAllEmployees(); 
         List<Project> projectList = service.getAllProjects(); 
-        List<TimeEntry> timesList = service.getAllTimes();
+        List<WorkLog> workLogList = service.getAllTimes();
 
-        for (TimeEntry workLogEntry : timesList) {
+        for (WorkLog workLogEntry : workLogList) {
             WorkLogRow row = new WorkLogRow(workLogEntry, employeeList, projectList);
             add(row);
         }
-        
+
         System.out.println(employeeList.get(0).getName());
         Employee[] array = new Employee[employeeList.size()];
         employeeList.toArray(array);

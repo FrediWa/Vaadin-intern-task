@@ -5,12 +5,11 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 
 import com.example.application.data.models.Project;
 import com.example.application.data.models.Employee;
-import com.example.application.data.models.TimeEntry;
+import com.example.application.data.models.WorkLog;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -41,7 +40,7 @@ public class WorkLogRow extends Composite<Div> {
     // readOnlySelector.setLabel("Edit fields");
     boolean readOnly = !(readOnlySelector.getValue());
     
-    public WorkLogRow(TimeEntry workLogEntry, List<Employee> employees, List<Project> projects) {
+    public WorkLogRow(WorkLog workLogEntry, List<Employee> employees, List<Project> projects) {
         employeeDropdown.setItems(employees);
         projectDropdown.setItems(projects);
         

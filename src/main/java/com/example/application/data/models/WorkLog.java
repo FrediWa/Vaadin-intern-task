@@ -11,11 +11,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import com.example.application.data.models.Project;
-
 @Entity
 @Table(name = "times")
-public class TimeEntry extends AbstractEntity {
+public class WorkLog extends AbstractEntity {
     
     @ManyToOne
     @JoinColumn(name = "employee_id")
