@@ -2,6 +2,9 @@ package com.example.application.views.empty;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.virtuallist.VirtualList;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -26,10 +29,15 @@ public class EmptyView extends VerticalLayout {
         List<Project> projectList = service.getAllProjects(); 
         List<WorkLog> workLogList = service.getAllTimes();
 
-        for (WorkLog workLogEntry : workLogList) {
-            WorkLogRow row = new WorkLogRow(workLogEntry, employeeList, projectList);
-            add(row);
-        }
+        VirtualList<WorkLog> list = new VirtualList<>();
+
+        ComponentRenderer<Component, WorkLog> workLogRenderer = new ComponentRenderer<>(workLogEntry -> {
+            return(new WorkLogRow(workLogEntry, employeeList, projectList));
+        });
+
+        list.setItems(workLogList);
+        list.setRenderer(workLogRenderer);
+        add(list);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
