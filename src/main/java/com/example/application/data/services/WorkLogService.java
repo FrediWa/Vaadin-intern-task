@@ -10,6 +10,7 @@ import com.example.application.data.WorkLogRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service 
@@ -32,6 +33,17 @@ public class WorkLogService {
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
+    }
+    public int getMinutesForDay(LocalDate date, Employee employee) {
+        // TODO: Reduce hours for a day for an employee
+        long employee_id = employee.getId();
+        return 450;
+    }
+    public void updateOneWorkLog(WorkLog newLog) {
+        WorkLog logEntry = workLogRepository.findById(newLog.getId()).orElseThrow(
+                () -> new RuntimeException("WorkLog not found")
+        );
+        workLogRepository.save(newLog);
     }
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
