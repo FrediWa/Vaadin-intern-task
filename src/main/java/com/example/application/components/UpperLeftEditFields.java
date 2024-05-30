@@ -11,6 +11,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.PropertyId;
 
 import java.util.List;
 
@@ -18,7 +19,8 @@ public class UpperLeftEditFields extends FormLayout {
     WorkLogService service;
     ComboBox<Employee> employeeDropdown;
     DatePicker datePicker;
-    TimePicker startTimePicker;
+    public TimePicker startTimePicker;
+
     IntegerField absentField;
 
     public UpperLeftEditFields(BeanValidationBinder<WorkLog>  binder,  WorkLogService service) {
@@ -30,14 +32,13 @@ public class UpperLeftEditFields extends FormLayout {
         );
         this.service = service;
 
-        binder.bindInstanceFields(this);
-
         employeeDropdown = new ComboBox<>();
         employeeDropdown.setLabel("Employee");
 
         datePicker = new DatePicker();
-        startTimePicker = new TimePicker();
         datePicker.setLabel("Date");
+        
+        startTimePicker = new TimePicker();
         startTimePicker.setLabel("Start time");
 
         employeeDropdown.setPrefixComponent(new Icon("vaadin", "user"));
@@ -49,15 +50,11 @@ public class UpperLeftEditFields extends FormLayout {
         absentField.setValue(30);
         absentField.setStepButtonsVisible(true);
 
-        // binder.bind(employeeDropdown, WorkLog::getEmployee, WorkLog::setEmployee);
-        // binder.bind(datePicker, WorkLog::getStartDate, WorkLog::setEmployee);
-        // binder.bind(startTimePicker, WorkLog::getStartTime, WorkLog::setEmployee);
-        // binder.bind(absentField, WorkLog::getAbsent, WorkLog::setAbsent);
+        binder.bind(employeeDropdown, WorkLog::getEmployee, WorkLog::setEmployee);
+        binder.bind(datePicker, WorkLog::getStartDate, WorkLog::setStartDate);
+        binder.bind(startTimePicker, WorkLog::getStartTime, WorkLog::setStartTime);
+        binder.bind(absentField, WorkLog::getAbsent, WorkLog::setAbsent);
 
         add(employeeDropdown, datePicker, startTimePicker, absentField);
-
-        
-
-        // Rest of constructor omitted
     }
 }

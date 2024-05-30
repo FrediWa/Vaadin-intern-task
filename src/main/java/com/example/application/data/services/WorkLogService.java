@@ -4,6 +4,8 @@ import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
 import com.example.application.data.models.WorkLog;
 
+import jakarta.transaction.Transactional;
+
 import com.example.application.data.EmployeeRepository;
 import com.example.application.data.ProjectRepository;
 import com.example.application.data.WorkLogRepository;
@@ -39,12 +41,11 @@ public class WorkLogService {
         long employee_id = employee.getId();
         return 450;
     }
-    public void updateOneWorkLog(WorkLog newLog) {
-        WorkLog logEntry = workLogRepository.findById(newLog.getId()).orElseThrow(
-                () -> new RuntimeException("WorkLog not found")
-        );
+    @Transactional
+    public void saveWorkLog(WorkLog newLog) {
         workLogRepository.save(newLog);
     }
+
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
