@@ -19,4 +19,12 @@ public class Project extends AbstractEntity {
     public String toString() {
         return project;
     }
+
+    public String getName() {
+        return this.project;
+    }
+    public void setName(String name) {
+        this.project = name;
+        System.out.println(this.project);
+    }
 } 

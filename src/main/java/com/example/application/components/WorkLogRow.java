@@ -69,10 +69,7 @@ public class WorkLogRow extends FormLayout {
         
         employeeDropdown.setValue(workLogEntry.getEmployee());
         projectDropdown.setValue(workLogEntry.getProject());
-        datePicker.setValue(LocalDate.parse(workLogEntry.getStartDate()));
-        
-        startTime = LocalTime.parse(workLogEntry.getStartTime(), DateTimeFormatter.ofPattern("HH:mm:ss"));
-        endTime   = LocalTime.parse(workLogEntry.getEndTime(), DateTimeFormatter.ofPattern("HH:mm:ss"));
+
         startTimePicker.setValue(startTime);
         endTimePicker.setValue(endTime);
         startTimePicker.setStep(Duration.ofMinutes(15));
