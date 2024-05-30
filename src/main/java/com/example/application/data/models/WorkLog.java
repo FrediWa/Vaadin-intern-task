@@ -24,23 +24,23 @@ public class WorkLog extends AbstractEntity {
     @JsonIgnoreProperties({"employees"})
     private Employee employee;
     
-    @NotEmpty
+    @NotNull
     @Column(name = "start_time")
     private LocalTime startTime;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "description")
-    private String description;
+    private String description = "";
 
-    @NotEmpty
+    @NotNull
     @Column(name = "minutes")
     private int minutes;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "absent")
     private int absent;
 
@@ -52,15 +52,21 @@ public class WorkLog extends AbstractEntity {
 
     @Override
     public String toString() {
-        return project.toString();
+        return employee.toString() + ", " + 
+               startTime.toString() + ", " + 
+               startDate.toString() + ", " + 
+               description + ", " + 
+               minutes + ", " + 
+               absent + ", " + 
+               project.toString();
     }
 
     public String getEmployeeName() { return employee.toString(); }
 
-    public Employee getEmployee() {System.out.println(this.employee); return employee;  }
-    public void setEmployee(Employee employee) { this.employee = employee; System.out.println(this.employee);}
+    public Employee getEmployee() { return employee;  }
+    public void setEmployee(Employee employee) { this.employee = employee; }
   
-    public void setStartTime(LocalTime starTime) { this.startTime = startTime; }
+    public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
     public LocalTime getStartTime() { return startTime; }
 
     public LocalDate getStartDate() { return startDate; }
@@ -70,12 +76,16 @@ public class WorkLog extends AbstractEntity {
     public void setAbsent(int absent) { this.absent = absent;}
 
     public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
     public String getProjectName() { return project.toString(); }
     public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
 
     public void initProject() { this.project = new Project(); }
 
-    public void setProjectName(String name) { System.out.println(name); this.project.setName(name); }
+    public void setProjectName(String name) { this.project.setName(name); }
     public int getMinutes() { return minutes;}
+    public void setMinutes(int minutes) { this.minutes = minutes;}
     
 } 
