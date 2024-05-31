@@ -45,6 +45,9 @@ public class WorkLogService {
     public void saveWorkLog(WorkLog newLog) {
         workLogRepository.save(newLog);
     }
+    public void deleteOne(WorkLog workLog) {    
+        workLogRepository.delete(workLog);
+    }
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();

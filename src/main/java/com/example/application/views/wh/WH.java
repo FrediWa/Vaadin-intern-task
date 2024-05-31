@@ -5,17 +5,19 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.example.application.data.models.WorkLog;
 import com.example.application.data.services.WorkLogService;
 import com.example.application.views.MainLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -57,18 +59,35 @@ public class WH extends VerticalLayout {
                 this.currentWorkLog = event.getValue();
                 formControls.saveButton.setText("Update");
                 formControls.resetButton.setText("Cancel");
+
+                formControls.deleteButton.removeClassName(LumoUtility.Display.HIDDEN);
             }
             else {
                 resetForm();
                 formControls.saveButton.setText("Add");
                 formControls.resetButton.setText("Reset");
+                formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
             }
         });
+        formControls.deleteButton.addClickListener(e -> {
+            if (this.currentWorkLog != null) {
+                service.deleteOne(this.currentWorkLog);
+                workLogs.removeIf(obj -> obj.getId() == this.currentWorkLog.getId());
+                grid.setItems(workLogs);
+            }else {
+                System.out.println("Someone did something illegal");
+            }
+            grid.select(null);
+            resetForm();
+            grid.select(null);
+            refreshGrid();
+        });
+
         formControls.resetButton.addClickListener(e -> {
             resetForm();
             grid.select(null);
         });
-
+        
         formControls.saveButton.addClickListener(e -> {
             try {
                 boolean newEntry = currentWorkLog == null;
@@ -112,7 +131,7 @@ public class WH extends VerticalLayout {
     private void resetForm() {
         populateForm(null);
     }
-
+  
     private void populateForm(WorkLog entry) {
         this.currentWorkLog = entry;
         binder.readBean(this.currentWorkLog);
