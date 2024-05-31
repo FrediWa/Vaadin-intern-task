@@ -19,7 +19,7 @@ public class UpperLeftEditFields extends FormLayout {
     WorkLogService service;
     ComboBox<Employee> employeeDropdown;
     DatePicker datePicker;
-    public TimePicker startTimePicker;
+    TimePicker startTimePicker;
 
     IntegerField absentField;
 
@@ -56,5 +56,9 @@ public class UpperLeftEditFields extends FormLayout {
         binder.bind(absentField, WorkLog::getAbsent, WorkLog::setAbsent);
 
         add(employeeDropdown, datePicker, startTimePicker, absentField);
+    }
+    public void setAbsentField(int message) {
+        absentField.setValue(30);
+        //employeeField.setValue(session.getCurrentUser())
     }
 }

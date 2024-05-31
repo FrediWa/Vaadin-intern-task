@@ -74,7 +74,8 @@ public class EmptyView extends VerticalLayout {
         
         HorizontalLayout entryEditPanelFooter = new HorizontalLayout();
         Button saveButton = new Button("Add");
-        entryEditPanelFooter.add(saveButton);
+        Button resetButton = new Button("Reset");
+        entryEditPanelFooter.add(resetButton, saveButton);
         entryEditPanelFooter.setWidth("100%");
         entryEditPanelFooter.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
 
@@ -94,11 +95,17 @@ public class EmptyView extends VerticalLayout {
                 populateForm(event.getValue());
                 this.currentWorkLog = event.getValue();
                 saveButton.setText("Update");
+                resetButton.setText("Cancel");
             }
             else {
-                populateForm(null);
+                resetForm();
                 saveButton.setText("Add");
+                resetButton.setText("Reset");
             }
+        });
+        resetButton.addClickListener(e -> {
+            resetForm();
+            grid.select(null);
         });
 
         saveButton.addClickListener(e -> {
@@ -118,7 +125,7 @@ public class EmptyView extends VerticalLayout {
                     grid.setItems(workLogs);
                 }
 
-                populateForm(null);
+                resetForm();
                 refreshGrid();
 
             } catch (ObjectOptimisticLockingFailureException exception) {
@@ -128,9 +135,8 @@ public class EmptyView extends VerticalLayout {
             }
         });
 
-        add(entryEditPanel);
+        add(entryEditPanel, grid);
 
-        add(grid);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -141,9 +147,20 @@ public class EmptyView extends VerticalLayout {
         grid.getDataProvider().refreshAll();
     }
 
+    private void resetForm() {
+        populateForm(null);
+    }
+
     private void populateForm(WorkLog entry) {
         this.currentWorkLog = entry;
         binder.readBean(this.currentWorkLog);
+        if (this.currentWorkLog == null) 
+            setFormDefaults();
+
+        
     }
 
+    private void setFormDefaults() {
+        upperLeftEditFields.setAbsentField(30);
+    }
 }
