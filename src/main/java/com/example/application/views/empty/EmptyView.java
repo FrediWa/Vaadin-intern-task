@@ -12,6 +12,7 @@ import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
@@ -86,11 +87,12 @@ public class EmptyView extends VerticalLayout {
         grid.addColumn(WorkLog::getEmployeeName).setHeader("Employee");
         grid.addColumn(WorkLog::getDescription).setHeader("Description");
 
-        List<WorkLog> people = service.getAllTimes();
-        grid.setItems(people);
+        List<WorkLog> workLogs = service.getAllTimes();
+        grid.setItems(workLogs);
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 populateForm(event.getValue());
+                this.currentWorkLog = event.getValue();
                 saveButton.setText("Update");
             }
             else {
@@ -101,20 +103,24 @@ public class EmptyView extends VerticalLayout {
 
         saveButton.addClickListener(e -> {
             try {
-                if (this.currentWorkLog == null) {
-                    System.out.println("currentWorkLog is null");
+                boolean newEntry = currentWorkLog == null;
+                if (newEntry) {
                     this.currentWorkLog = new WorkLog();
                 }
-                System.out.println(upperLeftEditFields.startTimePicker.getValue());
                 binder.writeBean(this.currentWorkLog);
-                
-                System.out.println(currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
-
                 Notification.show("Data updated");
+                System.out.println("Should've updated now");
+                
+                // Adding the new entry directly removes the need for a page reload.
+                if (newEntry) {
+                    workLogs.add(this.currentWorkLog);
+                    grid.setItems(workLogs);
+                }
+
                 populateForm(null);
                 refreshGrid();
-                System.out.println("Should've updated now");
+
             } catch (ObjectOptimisticLockingFailureException exception) {
                 System.out.println(exception);
             } catch (ValidationException validationException) {
