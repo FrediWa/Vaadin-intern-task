@@ -1,7 +1,6 @@
 package com.example.application.views.empty;
 
-import com.example.application.components.LowerEditFields;
-import com.example.application.components.UpperLeftEditFields;
+import com.example.application.components.FormControls;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -33,53 +32,21 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 public class EmptyView extends VerticalLayout {
     WorkLogService service;
     private final BeanValidationBinder<WorkLog> binder;
-    UpperLeftEditFields upperLeftEditFields;
     private WorkLog currentWorkLog;
     Grid<WorkLog> grid;
+    FormControls formControls;
 
     public EmptyView(WorkLogService service) {
         this.service = service;
         binder = new BeanValidationBinder<>(WorkLog.class);
-
-        upperLeftEditFields = new UpperLeftEditFields(binder, service);
+        formControls = new FormControls(binder, service);
 
         VerticalLayout entryEditPanel = new VerticalLayout();
+
         HorizontalLayout upperEditFields = new HorizontalLayout();
-        FormLayout upperRightEditFields = new FormLayout();
-        LowerEditFields lowerEditFields;
 
-        TimePicker departurePicker = new TimePicker();
-        departurePicker.setLabel("Departure");
-        departurePicker.setValue(LocalTime.of(7, 0));
-        departurePicker.setReadOnly(true);
-
-        TextField totalHours = new TextField();
-        totalHours.setLabel("Total");
-        totalHours.setValue("7h30min");
-        totalHours.setReadOnly(true);
-
-        upperRightEditFields.add(departurePicker, totalHours);
-
-        upperRightEditFields.setResponsiveSteps(
-
-            new ResponsiveStep("0", 1),
-            new ResponsiveStep("300px", 2)
-        );
-
-        upperEditFields.add(upperLeftEditFields, upperRightEditFields);
         upperEditFields.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         upperEditFields.setWidth("100%");
-        
-        lowerEditFields = new LowerEditFields(binder, service);
-        
-        HorizontalLayout entryEditPanelFooter = new HorizontalLayout();
-        Button saveButton = new Button("Add");
-        Button resetButton = new Button("Reset");
-        entryEditPanelFooter.add(resetButton, saveButton);
-        entryEditPanelFooter.setWidth("100%");
-        entryEditPanelFooter.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-
-        entryEditPanel.add(upperEditFields, lowerEditFields, entryEditPanelFooter);
         
         grid = new Grid<>(WorkLog.class, false);
         grid.addColumn(WorkLog::getStartDate).setHeader("Date");
@@ -94,21 +61,21 @@ public class EmptyView extends VerticalLayout {
             if (event.getValue() != null) {
                 populateForm(event.getValue());
                 this.currentWorkLog = event.getValue();
-                saveButton.setText("Update");
-                resetButton.setText("Cancel");
+                formControls.saveButton.setText("Update");
+                formControls.resetButton.setText("Cancel");
             }
             else {
                 resetForm();
-                saveButton.setText("Add");
-                resetButton.setText("Reset");
+                formControls.saveButton.setText("Add");
+                formControls.resetButton.setText("Reset");
             }
         });
-        resetButton.addClickListener(e -> {
+        formControls.resetButton.addClickListener(e -> {
             resetForm();
             grid.select(null);
         });
 
-        saveButton.addClickListener(e -> {
+        formControls.saveButton.addClickListener(e -> {
             try {
                 boolean newEntry = currentWorkLog == null;
                 if (newEntry) {
@@ -135,6 +102,7 @@ public class EmptyView extends VerticalLayout {
             }
         });
 
+        entryEditPanel.add(formControls);
         add(entryEditPanel, grid);
 
         setSizeFull();
@@ -155,12 +123,6 @@ public class EmptyView extends VerticalLayout {
         this.currentWorkLog = entry;
         binder.readBean(this.currentWorkLog);
         if (this.currentWorkLog == null) 
-            setFormDefaults();
-
-        
-    }
-
-    private void setFormDefaults() {
-        upperLeftEditFields.setAbsentField(30);
+            formControls.setDefaults();
     }
 }
