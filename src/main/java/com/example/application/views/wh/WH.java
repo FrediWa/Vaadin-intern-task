@@ -1,42 +1,36 @@
-package com.example.application.views.empty;
+package com.example.application.views.wh;
 
 import com.example.application.components.FormControls;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.example.application.data.models.WorkLog;
 import com.example.application.data.services.WorkLogService;
+import com.example.application.views.MainLayout;
 
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @PageTitle("Empty")
-@Route(value = "/:employeeId?/:action?(edit)")
+@Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "")
-public class EmptyView extends VerticalLayout {
+public class WH extends VerticalLayout {
     WorkLogService service;
     private final BeanValidationBinder<WorkLog> binder;
     private WorkLog currentWorkLog;
     Grid<WorkLog> grid;
     FormControls formControls;
 
-    public EmptyView(WorkLogService service) {
+    public WH(WorkLogService service) {
         this.service = service;
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service);
