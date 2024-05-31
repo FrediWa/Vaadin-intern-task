@@ -2,6 +2,7 @@ package com.example.application.views;
 
 
 import com.example.application.views.wh.WH;
+import com.example.application.components.UserInfo;
 import com.example.application.views.empty2.Empty2View;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -12,6 +13,8 @@ import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
@@ -75,23 +78,28 @@ public class MainLayout extends AppLayout {
         Header header = new Header();
         header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
 
-        Div layout = new Div();
-        layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        layout.addClassNames(Padding.Horizontal.MEDIUM);
 
         Nav nav = new Nav();
-        nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Horizontal.MEDIUM, Padding.Vertical.XSMALL);
+        nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Vertical.XSMALL);
 
         // Wrap the links in a list; improves accessibility
         UnorderedList list = new UnorderedList();
         list.addClassNames(Display.FLEX, Gap.SMALL, ListStyleType.NONE, Margin.NONE, Padding.NONE);
         nav.add(list);
+        UserInfo userInfo = new UserInfo("Joseph Mama", "System Admin");
+        nav.add(userInfo);
 
         for (MenuItemInfo menuItem : createMenuItems()) {
             list.add(menuItem);
 
         }
 
-        header.add(layout, nav);
+        layout.add(nav, userInfo);
+        header.add(layout);
         return header;
     }
 
