@@ -1,6 +1,7 @@
 package com.example.application.views.wh;
 
 import com.example.application.components.FormControls;
+import com.example.application.components.WeeklySummary;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -31,11 +32,13 @@ public class WH extends VerticalLayout {
     private WorkLog currentWorkLog;
     Grid<WorkLog> grid;
     FormControls formControls;
+    WeeklySummary weeklySummary;
 
     public WH(WorkLogService service) {
         this.service = service;
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service);
+        weeklySummary = new WeeklySummary("Joseph", service);
 
         VerticalLayout entryEditPanel = new VerticalLayout();
 
@@ -115,8 +118,7 @@ public class WH extends VerticalLayout {
             }
         });
 
-        entryEditPanel.add(formControls);
-        add(entryEditPanel, grid);
+        add(weeklySummary, formControls, entryEditPanel, grid);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

@@ -3,6 +3,7 @@ package com.example.application.data.services;
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
 import com.example.application.data.models.WorkLog;
+import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 
@@ -10,10 +11,17 @@ import com.example.application.data.EmployeeRepository;
 import com.example.application.data.ProjectRepository;
 import com.example.application.data.WorkLogRepository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service 
 public class WorkLogService {
@@ -36,11 +44,12 @@ public class WorkLogService {
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
-    public int getMinutesForDay(LocalDate date, Employee employee) {
-        // TODO: Reduce hours for a day for an employee
-        long employee_id = employee.getId();
-        return 450;
+
+    public Employee getEmployee(long id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        return employee.orElse(null);
     }
+
     @Transactional
     public void saveWorkLog(WorkLog newLog) {
         workLogRepository.save(newLog);
@@ -54,6 +63,14 @@ public class WorkLogService {
     }
     public List<WorkLog> getAllTimes() {
         return workLogRepository.findAll();
+    }
+
+    public List<Integer> getTimesForDay(LocalDate date, long employee_id) {
+        List<WorkLog> workLogs = workLogRepository.getMinutesForDay(date, employee_id);
+        List<Integer> minutesList = new ArrayList<>();
+        for (WorkLog logEntry : workLogs)
+            minutesList.add(logEntry.getMinutes());
+        return minutesList;
     }
     
 }
