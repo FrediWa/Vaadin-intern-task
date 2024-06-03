@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.icon.Icon;
@@ -21,6 +22,7 @@ import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+@CssImport("./themes/intern-project/components/editPanel.css")
 public class FormControls extends VerticalLayout {
     public ComboBox<Project> projectsDropdown;
     ComboBox<Employee> employeeDropdown;
@@ -37,6 +39,7 @@ public class FormControls extends VerticalLayout {
     public Button deleteButton;
 
     public FormControls(BeanValidationBinder<WorkLog>  binder,  WorkLogService service) {
+        setId("workhours-edit-panel");
         this.service = service;
         lowerEditFields = createLowerEditFields();
         upperEditFields = createUpperEditFields();
@@ -46,6 +49,7 @@ public class FormControls extends VerticalLayout {
         resetButton = new Button("Reset");
         deleteButton = new Button("Delete");
 
+    
         deleteButton.addClassName(LumoUtility.Display.HIDDEN);
 
 
@@ -53,8 +57,8 @@ public class FormControls extends VerticalLayout {
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         entryEditPanelFooter.add(deleteButton, resetButton, saveButton);
 
-        entryEditPanelFooter.setWidth("100%");
         entryEditPanelFooter.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        entryEditPanelFooter.setWidth("100%");
 
         bindFields(binder);
 

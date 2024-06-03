@@ -1,0 +1,7 @@
+#workhours-edit-panel {
+    width: initial!important;
+    margin: 4vw 5%;
+    padding: 15px;
+    border-radius: var(--lumo-border-radius-l);
+    box-shadow: var(--lumo-box-shadow-s);
+}

@@ -1,0 +1,37 @@
+#weekly-summary-panel {
+    padding: 50px 5% 30px 5%;
+    background: rgb(62,126,242);
+    background: linear-gradient(90deg, rgba(62,126,242,1) 0%, rgba(129,87,243,1) 100%);
+}
+
+h2, h4, p {
+    color: #fff;
+}
+
+.weekly-summary-week-day {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 20%;
+    padding: 20px;
+    background-color: #fff;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    
+}
+.weekly-summary-week-day h4 {
+    color: #282828;
+}
+.weekly-summary-week-day p {
+    color: #282828;
+    margin: 0;
+}
+
+.weekly-summary-week-day:last-child {
+    border:none;
+}
+.weekly-summary-days-summary {
+    width: 100%;
+    border-radius: var(--lumo-border-radius-l);
+    overflow: hidden;
+}
