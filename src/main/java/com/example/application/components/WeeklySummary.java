@@ -3,11 +3,12 @@ package com.example.application.components;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import com.example.application.data.models.Employee;
 import com.example.application.data.services.WorkLogService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
@@ -28,17 +29,18 @@ public class WeeklySummary extends Div {
         int weekDayNumber = now.getDayOfWeek().getValue();
         LocalDate localMonday = now.minusDays(weekDayNumber-1);
 
-        String weekDays[] = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+        String[] weekDays = {"Mon", "Tue", "Wed", "Thu", "Fri"};
 
         welcomeMessage = new H2("Hi " + name + ", it's week "+ weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
         LocalDate currentDate;
+        Employee currentEmployee = service.getEmployee(2);
         H4 hours;
         Paragraph weekDayInfo;
         Div weekDayWrapper;
         for (int i = 0; i < 5; i++) {
             currentDate = localMonday.plusDays(i);
-            List<Integer> minutesList = service.getTimesForDay(currentDate);
+            List<Integer> minutesList = service.getTimesForDay(currentDate, currentEmployee.getId());
 
             hours = new H4(this.reduceMinutesListToString(minutesList)); // TODO: remove hardcoded value
             weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));

@@ -3,6 +3,7 @@ package com.example.application.data.services;
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
 import com.example.application.data.models.WorkLog;
+import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 
@@ -44,6 +45,11 @@ public class WorkLogService {
         return employeeRepository.findAll();
     }
 
+    public Employee getEmployee(long id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        return employee.orElse(null);
+    }
+
     @Transactional
     public void saveWorkLog(WorkLog newLog) {
         workLogRepository.save(newLog);
@@ -59,8 +65,8 @@ public class WorkLogService {
         return workLogRepository.findAll();
     }
 
-    public List<Integer> getTimesForDay(LocalDate date) {
-        List<WorkLog> workLogs = workLogRepository.getMinutesForDay(date);
+    public List<Integer> getTimesForDay(LocalDate date, long employee_id) {
+        List<WorkLog> workLogs = workLogRepository.getMinutesForDay(date, employee_id);
         List<Integer> minutesList = new ArrayList<>();
         for (WorkLog logEntry : workLogs)
             minutesList.add(logEntry.getMinutes());
