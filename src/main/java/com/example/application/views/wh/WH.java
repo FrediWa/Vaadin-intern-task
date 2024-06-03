@@ -9,6 +9,8 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Svg;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.vaadin.lineawesome.LineAwesomeIcon;
 
 @CssImport("./themes/intern-project/views/workHours.css")
 @PageTitle("Empty")
@@ -31,6 +34,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 @RouteAlias(value = "")
 public class WH extends Div {
     WorkLogService service;
+    Button drawerToggleButton;
     private final BeanValidationBinder<WorkLog> binder;
     private WorkLog currentWorkLog;
     Grid<WorkLog> grid;
@@ -71,6 +75,17 @@ public class WH extends Div {
                 formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
             }
         });
+        
+        drawerToggleButton = new Button(LineAwesomeIcon.ANGLE_UP_SOLID.create());
+        drawerToggleButton.addClassName("weekly-summary-button");
+        drawerToggleButton.addClickListener(clickEvent -> {
+            if (drawerToggleButton.hasClassName("weekly-summary-closed"))
+                drawerToggleButton.removeClassName("weekly-summary-closed");
+            else
+                drawerToggleButton.addClassName("weekly-summary-closed");
+            weeklySummary.toggleClass(weeklySummary, "weekly-summary-panel-closed");
+        });
+
         formControls.deleteButton.addClickListener(e -> {
             if (this.currentWorkLog != null) {
                 service.deleteOne(this.currentWorkLog);
@@ -115,8 +130,8 @@ public class WH extends Div {
                 System.out.println(validationException);
             }
         });
-
-        add(weeklySummary, formControls, entryEditPanel, grid);
+    
+        add(weeklySummary,drawerToggleButton, formControls, entryEditPanel, grid);
 
         setSizeFull();
         getStyle().set("text-align", "center");

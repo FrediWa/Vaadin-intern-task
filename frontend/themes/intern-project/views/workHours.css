@@ -5,7 +5,9 @@ html {
 body {
     /* background-color: red; */
 }
-
+[part~="navbar"]{
+    background-color: red;
+}
 vaadin-grid {
     margin: 20px 5%;
     border-radius: var(--lumo-border-radius-l);
@@ -14,4 +16,27 @@ vaadin-grid {
 }
 vaadin-grid::part(odd-row){
     --vaadin-grid-cell-background: #eee;
+}
+
+vaadin-grid::part(selected-row) {
+    --vaadin-grid-cell-background: var(--lumo-tertiary-color);
+}
+
+.header-mask{
+    display: block;
+
+}
+.weekly-summary-button {
+    margin:0;
+    padding:0;
+    border-radius: 100%;
+    border: 1px solid #aaa;
+    transform: translate(0, -50%);
+    background-color: #fff;
+    position: absolute;
+    z-index: 10000;
+}
+
+.weekly-summary-button.weekly-summary-closed vaadin-icon {
+    transform: rotate(180deg);
 }

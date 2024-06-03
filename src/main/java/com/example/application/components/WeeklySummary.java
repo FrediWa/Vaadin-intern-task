@@ -6,9 +6,13 @@ import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
 
+import org.vaadin.lineawesome.LineAwesomeIcon;
+
 import com.example.application.data.models.Employee;
 import com.example.application.data.services.WorkLogService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -24,6 +28,7 @@ public class WeeklySummary extends VerticalLayout {
     Paragraph subtitle;
     HorizontalLayout weekDaysSummary;
     public WeeklySummary(String name, WorkLogService service) {
+        
         setId("weekly-summary-panel");
         addClassNames(TextAlignment.LEFT);
         setWidth("100%");
@@ -73,5 +78,13 @@ public class WeeklySummary extends VerticalLayout {
         weekDaysSummary.addClassName("weekly-summary-days-summary");
         this.removeAll();
         this.add(welcomeMessage, subtitle, weekDaysSummary);
+    }
+
+    public void toggleClass(Component element, String className) {
+        if(element.hasClassName(className)) {
+            element.removeClassName(className);
+        }else {
+            element.addClassName(className);
+        }
     }
 }
