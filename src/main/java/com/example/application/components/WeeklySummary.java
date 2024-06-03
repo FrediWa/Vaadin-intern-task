@@ -44,6 +44,7 @@ public class WeeklySummary extends Div {
             weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
             
             weekDayWrapper = new Div();
+            weekDayWrapper.setWidth("100%");
 
             weekDayWrapper.add(hours, weekDayInfo);
 

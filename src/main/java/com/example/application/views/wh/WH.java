@@ -118,8 +118,7 @@ public class WH extends VerticalLayout {
             }
         });
 
-        entryEditPanel.add(formControls);
-        add(weeklySummary, entryEditPanel, grid);
+        add(weeklySummary, formControls, entryEditPanel, grid);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
