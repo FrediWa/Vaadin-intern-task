@@ -56,6 +56,7 @@ public class WH extends VerticalLayout {
 
         List<WorkLog> workLogs = service.getAllTimes();
         grid.setItems(workLogs);
+
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 populateForm(event.getValue());
@@ -100,7 +101,6 @@ public class WH extends VerticalLayout {
                 binder.writeBean(this.currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
                 Notification.show("Data updated");
-                System.out.println("Should've updated now");
                 
                 // Adding the new entry directly removes the need for a page reload.
                 if (newEntry) {
@@ -131,7 +131,9 @@ public class WH extends VerticalLayout {
     }
 
     private void resetForm() {
+        System.out.println("Reset form");
         populateForm(null);
+        weeklySummary.reloadWeekly(this.service, "Jo");
     }
   
     private void populateForm(WorkLog entry) {

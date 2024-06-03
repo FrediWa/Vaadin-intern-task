@@ -23,37 +23,13 @@ public class WeeklySummary extends Div {
     public WeeklySummary(String name, WorkLogService service) {
         addClassNames(TextAlignment.LEFT);
         setWidth("100%");
-        LocalDate now = LocalDate.now(); 
-        weekDaysSummary = new HorizontalLayout();
-        int weekNumber = now.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-        int weekDayNumber = now.getDayOfWeek().getValue();
-        LocalDate localMonday = now.minusDays(weekDayNumber-1);
-
-        String[] weekDays = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+        
+        int weekNumber = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
         welcomeMessage = new H2("Hi " + name + ", it's week "+ weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
-        LocalDate currentDate;
-        Employee currentEmployee = service.getEmployee(2);
-        H4 hours;
-        Paragraph weekDayInfo;
-        Div weekDayWrapper;
-        for (int i = 0; i < 5; i++) {
-            currentDate = localMonday.plusDays(i);
-            List<Integer> minutesList = service.getTimesForDay(currentDate, currentEmployee.getId());
 
-            hours = new H4(this.reduceMinutesListToString(minutesList)); // TODO: remove hardcoded value
-            weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
-            
-            weekDayWrapper = new Div();
-            weekDayWrapper.setWidth("100%");
-
-            weekDayWrapper.add(hours, weekDayInfo);
-
-            weekDaysSummary.add(weekDayWrapper);
-        }
-
-        add(welcomeMessage, subtitle, weekDaysSummary);
+        reloadWeekly(service, name);
     }
 
     private String reduceMinutesListToString(List<Integer> minutesList) { 
@@ -63,5 +39,34 @@ public class WeeklySummary extends Div {
         String minutesString = (minutesReduced % 60)+"min";
 
         return (hoursString + minutesString);
+    }
+
+    public void reloadWeekly(WorkLogService service, String name) {
+        this.weekDaysSummary = new HorizontalLayout();
+        System.out.println("Reload weekly " + name);
+        Employee currentEmployee = service.getEmployee(2);
+        LocalDate now = LocalDate.now(), currentDate;
+        int weekDayNumber = now.getDayOfWeek().getValue();
+        String[] weekDays = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+        LocalDate localMonday = now.minusDays(weekDayNumber-1);
+        Div weekDayWrapper;
+        H4 hours;
+        Paragraph weekDayInfo;
+       
+        for (int i = 0; i < 5; i++) {
+            weekDayWrapper = new Div();
+            currentDate = localMonday.plusDays(i);
+            List<Integer> minutesList = service.getTimesForDay(currentDate, currentEmployee.getId());
+
+            hours = new H4(this.reduceMinutesListToString(minutesList)); 
+            weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
+            
+            weekDayWrapper.add(hours, weekDayInfo);
+            this.weekDaysSummary.add(weekDayWrapper);
+        }
+        System.out.println("removing");
+        this.removeAll();
+        System.out.println("Adding back");
+        this.add(welcomeMessage, subtitle, weekDaysSummary);
     }
 }
