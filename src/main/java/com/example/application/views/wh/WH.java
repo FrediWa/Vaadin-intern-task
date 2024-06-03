@@ -45,11 +45,11 @@ public class WH extends VerticalLayout {
         upperEditFields.setWidth("100%");
         
         grid = new Grid<>(WorkLog.class, false);
-        grid.addColumn(WorkLog::getStartDate).setHeader("Date");
-        grid.addColumn(WorkLog::getMinutes).setHeader("Minutes");
-        grid.addColumn(WorkLog::getProjectName).setHeader("Project");
-        grid.addColumn(WorkLog::getEmployeeName).setHeader("Employee");
-        grid.addColumn(WorkLog::getDescription).setHeader("Description");
+        grid.addColumn(WorkLog::getStartDate).setHeader("Date").setSortable(true);
+        grid.addColumn(WorkLog::getMinutes).setHeader("Minutes").setSortable(true);
+        grid.addColumn(WorkLog::getProjectName).setHeader("Project").setSortable(true);
+        grid.addColumn(WorkLog::getEmployeeName).setHeader("Employee").setSortable(true);
+        grid.addColumn(WorkLog::getDescription).setHeader("Description").setSortable(true);
 
         List<WorkLog> workLogs = service.getAllTimes();
         grid.setItems(workLogs);
