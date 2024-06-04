@@ -5,11 +5,6 @@ import com.example.application.components.WeeklySummary;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Svg;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -22,7 +17,6 @@ import com.example.application.data.models.WorkLog;
 import com.example.application.data.services.WorkLogService;
 import com.example.application.views.MainLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -33,19 +27,24 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "")
 public class WH extends Div {
-    WorkLogService service;
-    Button drawerToggleButton;
+    private final WorkLogService service;
+    private final Button drawerToggleButton;
     private final BeanValidationBinder<WorkLog> binder;
+    private final Grid<WorkLog> grid;
+    private final FormControls formControls;
+    private final WeeklySummary weeklySummary;
+    
     private WorkLog currentWorkLog;
-    Grid<WorkLog> grid;
-    FormControls formControls;
-    WeeklySummary weeklySummary;
+    
     public WH(WorkLogService service) {
         addClassName("workhours-view");
+        
         this.service = service;
+
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service);
         weeklySummary = new WeeklySummary("Joseph", service);
+        currentWorkLog = new WorkLog();
 
         Div entryEditPanel = new Div();
 
@@ -60,20 +59,18 @@ public class WH extends Div {
         grid.setItems(workLogs);
 
         grid.asSingleSelect().addValueChangeListener(event -> {
-            if (event.getValue() != null) {
+            boolean noSelection = (event.getValue() != null);
+            if (noSelection) {
                 populateForm(event.getValue());
-                this.currentWorkLog = event.getValue();
-                formControls.saveButton.setText("Update");
-                formControls.resetButton.setText("Cancel");
-
+                currentWorkLog = event.getValue();
                 formControls.deleteButton.removeClassName(LumoUtility.Display.HIDDEN);
             }
             else {
                 resetForm();
-                formControls.saveButton.setText("Add");
-                formControls.resetButton.setText("Reset");
                 formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
             }
+            formControls.saveButton.setText(noSelection ? "UPDATE" : "SAVE");
+            formControls.resetButton.setText(noSelection ? "RESET" : "CANCEL");
         });
         
         drawerToggleButton = new Button(LineAwesomeIcon.ANGLE_UP_SOLID.create());
@@ -83,7 +80,8 @@ public class WH extends Div {
                 drawerToggleButton.removeClassName("weekly-summary-closed");
             else
                 drawerToggleButton.addClassName("weekly-summary-closed");
-            weeklySummary.toggleClass(weeklySummary, "weekly-summary-panel-closed");
+                
+            weeklySummary.toggleSummary();
         });
 
         formControls.deleteButton.addClickListener(e -> {
@@ -95,8 +93,8 @@ public class WH extends Div {
                 System.out.println("Someone did something illegal");
             }
             grid.select(null);
+
             resetForm();
-            grid.select(null);
             refreshGrid();
         });
 
@@ -109,7 +107,7 @@ public class WH extends Div {
             try {
                 boolean newEntry = currentWorkLog == null;
                 if (newEntry) {
-                    this.currentWorkLog = new WorkLog();
+                    currentWorkLog = new WorkLog();
                 }
                 binder.writeBean(this.currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
@@ -125,9 +123,9 @@ public class WH extends Div {
                 refreshGrid();
 
             } catch (ObjectOptimisticLockingFailureException exception) {
-                System.out.println(exception);
+                // System.out.println(exception);
             } catch (ValidationException validationException) {
-                System.out.println(validationException);
+                // System.out.println(validationException);
             }
         });
     
@@ -142,16 +140,23 @@ public class WH extends Div {
     }
 
     private void resetForm() {
-        System.out.println("Reset form");
+        if (this.currentWorkLog == null) 
+            return;
+
+            
+            
+        weeklySummary.updateWeekDaySummary(
+            currentWorkLog.getStartDate(),
+            WeeklySummary.reduceMinutesListToString(service.getTimesForDay(currentWorkLog.getStartDate(), 2))
+            );
         populateForm(null);
-        weeklySummary.reloadWeekly(this.service, "Jo");
     }
   
     private void populateForm(WorkLog entry) {
         this.currentWorkLog = entry;
         binder.readBean(this.currentWorkLog);
+
         if (this.currentWorkLog == null) 
             formControls.setDefaults();
     }
-
 }

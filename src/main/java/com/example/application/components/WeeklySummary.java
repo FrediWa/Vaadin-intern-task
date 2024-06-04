@@ -6,13 +6,8 @@ import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
 
-import org.vaadin.lineawesome.LineAwesomeIcon;
-
 import com.example.application.data.models.Employee;
 import com.example.application.data.services.WorkLogService;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -27,8 +22,9 @@ public class WeeklySummary extends VerticalLayout {
     H2 welcomeMessage;
     Paragraph subtitle;
     HorizontalLayout weekDaysSummary;
+    H4[] hours = new H4[5];
+
     public WeeklySummary(String name, WorkLogService service) {
-        
         setId("weekly-summary-panel");
         addClassNames(TextAlignment.LEFT);
         setWidth("100%");
@@ -38,10 +34,15 @@ public class WeeklySummary extends VerticalLayout {
         welcomeMessage = new H2("Hi " + name + ", it's week "+ weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
 
-        reloadWeekly(service, name);
+        for (int i = 0; i < 5; i++){
+            hours[i] = new H4();
+        }
+            
+        loadWeekly(service, name);
     }
 
-    private String reduceMinutesListToString(List<Integer> minutesList) { 
+
+    public static String reduceMinutesListToString(List<Integer> minutesList) { 
         int minutesReduced = minutesList.stream().reduce(0, Integer::sum);
 
         String hoursString = (minutesReduced / 60)+"h";
@@ -50,7 +51,7 @@ public class WeeklySummary extends VerticalLayout {
         return (hoursString + minutesString);
     }
 
-    public void reloadWeekly(WorkLogService service, String name) {
+    public void loadWeekly(WorkLogService service, String name) {
         this.weekDaysSummary = new HorizontalLayout();
         System.out.println("Reload weekly " + name);
         Employee currentEmployee = service.getEmployee(2);
@@ -59,18 +60,17 @@ public class WeeklySummary extends VerticalLayout {
         String[] weekDays = {"Mon", "Tue", "Wed", "Thu", "Fri"};
         LocalDate localMonday = now.minusDays(weekDayNumber-1);
         Div weekDayWrapper;
-        H4 hours;
         Paragraph weekDayInfo;
-       
+        
         for (int i = 0; i < 5; i++) {
             weekDayWrapper = new Div();
             currentDate = localMonday.plusDays(i);
             List<Integer> minutesList = service.getTimesForDay(currentDate, currentEmployee.getId());
 
-            hours = new H4(this.reduceMinutesListToString(minutesList)); 
+            hours[i].setText(this.reduceMinutesListToString(minutesList)); 
             weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
             
-            weekDayWrapper.add(weekDayInfo, hours);
+            weekDayWrapper.add(weekDayInfo, hours[i]);
             weekDayWrapper.addClassName("weekly-summary-week-day");
             this.weekDaysSummary.add(weekDayWrapper);
         }
@@ -80,11 +80,18 @@ public class WeeklySummary extends VerticalLayout {
         this.add(welcomeMessage, subtitle, weekDaysSummary);
     }
 
-    public void toggleClass(Component element, String className) {
-        if(element.hasClassName(className)) {
-            element.removeClassName(className);
+    public void updateWeekDaySummary(LocalDate date, String newMinutes) {
+        int dayOfTheWeek = date.getDayOfWeek().getValue();
+        hours[dayOfTheWeek-1].setText(newMinutes);
+    }
+
+    public void toggleSummary() {
+        String className = "weekly-summary-panel-closed";
+
+        if(this.hasClassName(className)) {
+            this.removeClassName(className);
         }else {
-            element.addClassName(className);
+            this.addClassName(className);
         }
     }
 }
