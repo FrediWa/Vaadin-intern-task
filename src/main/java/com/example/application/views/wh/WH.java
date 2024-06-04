@@ -2,11 +2,15 @@ package com.example.application.views.wh;
 
 import com.example.application.components.FormControls;
 import com.example.application.components.WeeklySummary;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Svg;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -22,31 +26,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.vaadin.lineawesome.LineAwesomeIcon;
 
+@CssImport("./themes/intern-project/views/workHours.css")
 @PageTitle("Empty")
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "")
-public class WH extends VerticalLayout {
+public class WH extends Div {
     WorkLogService service;
+    Button drawerToggleButton;
     private final BeanValidationBinder<WorkLog> binder;
     private WorkLog currentWorkLog;
     Grid<WorkLog> grid;
     FormControls formControls;
     WeeklySummary weeklySummary;
-
     public WH(WorkLogService service) {
+        addClassName("workhours-view");
         this.service = service;
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service);
         weeklySummary = new WeeklySummary("Joseph", service);
 
-        VerticalLayout entryEditPanel = new VerticalLayout();
+        Div entryEditPanel = new Div();
 
-        HorizontalLayout upperEditFields = new HorizontalLayout();
-
-        upperEditFields.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        upperEditFields.setWidth("100%");
-        
         grid = new Grid<>(WorkLog.class, false);
         grid.addColumn(WorkLog::getStartDate).setHeader("Date").setSortable(true);
         grid.addColumn(WorkLog::getMinutes).setHeader("Minutes").setSortable(true);
@@ -73,6 +75,17 @@ public class WH extends VerticalLayout {
                 formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
             }
         });
+        
+        drawerToggleButton = new Button(LineAwesomeIcon.ANGLE_UP_SOLID.create());
+        drawerToggleButton.addClassName("weekly-summary-button");
+        drawerToggleButton.addClickListener(clickEvent -> {
+            if (drawerToggleButton.hasClassName("weekly-summary-closed"))
+                drawerToggleButton.removeClassName("weekly-summary-closed");
+            else
+                drawerToggleButton.addClassName("weekly-summary-closed");
+            weeklySummary.toggleClass(weeklySummary, "weekly-summary-panel-closed");
+        });
+
         formControls.deleteButton.addClickListener(e -> {
             if (this.currentWorkLog != null) {
                 service.deleteOne(this.currentWorkLog);
@@ -117,12 +130,10 @@ public class WH extends VerticalLayout {
                 System.out.println(validationException);
             }
         });
-
-        add(weeklySummary, formControls, entryEditPanel, grid);
+    
+        add(weeklySummary,drawerToggleButton, formControls, entryEditPanel, grid);
 
         setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }
     private void refreshGrid() {
@@ -142,4 +153,5 @@ public class WH extends VerticalLayout {
         if (this.currentWorkLog == null) 
             formControls.setDefaults();
     }
+
 }

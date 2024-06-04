@@ -6,21 +6,30 @@ import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
 
+import org.vaadin.lineawesome.LineAwesomeIcon;
+
 import com.example.application.data.models.Employee;
 import com.example.application.data.services.WorkLogService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextAlignment;
 
-public class WeeklySummary extends Div {
+@CssImport("./themes/intern-project/components/weeklySummary.css")
+public class WeeklySummary extends VerticalLayout {
     H2 welcomeMessage;
     Paragraph subtitle;
     HorizontalLayout weekDaysSummary;
     public WeeklySummary(String name, WorkLogService service) {
+        
+        setId("weekly-summary-panel");
         addClassNames(TextAlignment.LEFT);
         setWidth("100%");
         
@@ -61,12 +70,21 @@ public class WeeklySummary extends Div {
             hours = new H4(this.reduceMinutesListToString(minutesList)); 
             weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
             
-            weekDayWrapper.add(hours, weekDayInfo);
+            weekDayWrapper.add(weekDayInfo, hours);
+            weekDayWrapper.addClassName("weekly-summary-week-day");
             this.weekDaysSummary.add(weekDayWrapper);
         }
-        System.out.println("removing");
+        weekDaysSummary.setSpacing(false);
+        weekDaysSummary.addClassName("weekly-summary-days-summary");
         this.removeAll();
-        System.out.println("Adding back");
         this.add(welcomeMessage, subtitle, weekDaysSummary);
+    }
+
+    public void toggleClass(Component element, String className) {
+        if(element.hasClassName(className)) {
+            element.removeClassName(className);
+        }else {
+            element.addClassName(className);
+        }
     }
 }

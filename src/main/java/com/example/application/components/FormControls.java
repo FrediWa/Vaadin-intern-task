@@ -4,12 +4,16 @@ import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
 import com.example.application.data.models.WorkLog;
 import com.example.application.data.services.WorkLogService;
+import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,6 +25,7 @@ import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+@CssImport("./themes/intern-project/components/editPanel.css")
 public class FormControls extends VerticalLayout {
     public ComboBox<Project> projectsDropdown;
     ComboBox<Employee> employeeDropdown;
@@ -37,6 +42,7 @@ public class FormControls extends VerticalLayout {
     public Button deleteButton;
 
     public FormControls(BeanValidationBinder<WorkLog>  binder,  WorkLogService service) {
+        setId("workhours-edit-panel");
         this.service = service;
         lowerEditFields = createLowerEditFields();
         upperEditFields = createUpperEditFields();
@@ -46,6 +52,7 @@ public class FormControls extends VerticalLayout {
         resetButton = new Button("Reset");
         deleteButton = new Button("Delete");
 
+    
         deleteButton.addClassName(LumoUtility.Display.HIDDEN);
 
 
@@ -53,12 +60,12 @@ public class FormControls extends VerticalLayout {
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         entryEditPanelFooter.add(deleteButton, resetButton, saveButton);
 
-        entryEditPanelFooter.setWidth("100%");
         entryEditPanelFooter.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        entryEditPanelFooter.setWidth("100%");
 
         bindFields(binder);
 
-        upperEditFields.add(employeeDropdown, datePicker, startTimePicker, absentField);
+        
         add(upperEditFields, lowerEditFields, entryEditPanelFooter);
 
     }
@@ -72,22 +79,38 @@ public class FormControls extends VerticalLayout {
         );
 
         employeeDropdown = new ComboBox<>();
-        employeeDropdown.setLabel("Employee");
+        employeeDropdown.setPrefixComponent(new Icon("vaadin", "user"));
+        employeeDropdown.setPlaceholder("Employee");
+        employeeDropdown.setItems(service.getAllEmployees());
+        employeeDropdown.setRequired(true);
+        employeeDropdown.setRequiredIndicatorVisible(false);
 
         datePicker = new DatePicker();
-        datePicker.setLabel("Date");
+        datePicker.setRequired(true);
+        datePicker.setRequiredIndicatorVisible(false);
+        datePicker.setPlaceholder("Date");
+
         
         startTimePicker = new TimePicker();
-        startTimePicker.setLabel("Start time");
-
-        employeeDropdown.setPrefixComponent(new Icon("vaadin", "user"));
-        employeeDropdown.setItems(service.getAllEmployees());
+        startTimePicker.setRequired(true);
+        startTimePicker.setRequiredIndicatorVisible(false);
+        startTimePicker.setPlaceholder("Arrival");
 
         absentField = new IntegerField();
-        absentField.setLabel("Absent");
+
         absentField.setStep(15);
         absentField.setValue(30);
         absentField.setStepButtonsVisible(true);
+        absentField.setRequired(true);
+        startTimePicker.setPlaceholder("Absent");
+        absentField.setRequiredIndicatorVisible(false);
+
+
+        upperEditFields.add(employeeDropdown, datePicker, startTimePicker, absentField);
+        
+
+        upperEditFields.addClassName("form-control-upper-fields");
+
         return(upperEditFields);
     }
     private FormLayout createLowerEditFields() {
@@ -106,7 +129,7 @@ public class FormControls extends VerticalLayout {
         );
         
         lowerEditFields.add(minutesField, description, projectsDropdown);
-
+        lowerEditFields.addClassName("form-control-lower-fields");
         return(lowerEditFields);
     }
     private void bindFields(BeanValidationBinder<WorkLog>  binder) {

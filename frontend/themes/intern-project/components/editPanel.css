@@ -1,0 +1,22 @@
+#workhours-edit-panel {
+    width: initial!important;
+    margin: 4vw 5%;
+    padding: 15px;
+    border-radius: var(--lumo-border-radius-l);
+    box-shadow: var(--lumo-box-shadow-s);
+}
+
+.form-control-lower-fields {
+    --vaadin-input-field-background: #fff;
+    --vaadin-input-field-border-width: 1px;
+    --vaadin-input-field-border-color: #C5CAD2;
+}
+
+.form-control-upper-fields {
+    --vaadin-input-field-background: #fff;
+    --vaadin-input-field-border-width: 1px;
+    --vaadin-input-field-border-color: #C5CAD2; 
+    --vaadin-input-field-border-radius: 50px;
+    --vaadin-input-field-height: var(--lumo-size-s)
+}
+
