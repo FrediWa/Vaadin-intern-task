@@ -22,13 +22,14 @@ vaadin-grid {
     overflow: hidden;
     box-shadow: var(--lumo-box-shadow-s);
 }
-vaadin-grid::part(odd-row){
+vaadin-grid::part(odd-row), vaadin-grid::part(header-cell){
     --vaadin-grid-cell-background: #eee;
 }
 
 vaadin-grid::part(selected-row) {
     --vaadin-grid-cell-background: var(--lumo-tertiary-color);
 }
+
 
 .header-mask{
     display: block;
@@ -48,3 +49,5 @@ vaadin-grid::part(selected-row) {
 .weekly-summary-button.weekly-summary-closed vaadin-icon {
     transform: rotate(180deg);
 }
+
+
