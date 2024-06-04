@@ -40,8 +40,8 @@ public class WH extends Div {
     Grid<WorkLog> grid;
     FormControls formControls;
     WeeklySummary weeklySummary;
-
     public WH(WorkLogService service) {
+        addClassName("workhours-view");
         this.service = service;
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service);

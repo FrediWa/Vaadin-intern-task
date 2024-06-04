@@ -2,11 +2,13 @@
     padding: 50px 5% 30px 5%;
     background: rgb(62,126,242);
     background: linear-gradient(90deg, rgba(62,126,242,1) 0%, rgba(129,87,243,1) 100%);
+    z-index: 9999;
 
     transition: height 0.4s, opacity 0.2s, padding 0.1s;
 }
 
-h2, h4, p {
+#weekly-summary-panel > h2, 
+#weekly-summary-panel > p {
     color: #fff;
 }
 
