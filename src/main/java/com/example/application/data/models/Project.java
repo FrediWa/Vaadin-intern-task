@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 @Entity
 @Table(name = "projects")
 public class Project extends AbstractEntity {
-    
+
     @NotEmpty
     @Column(name = "project_name")
     private String project = "";
@@ -22,8 +22,9 @@ public class Project extends AbstractEntity {
     public String getName() {
         return this.project;
     }
+
     public void setName(String name) {
         this.project = name;
         System.out.println(this.project);
     }
-} 
+}

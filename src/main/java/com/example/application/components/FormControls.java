@@ -1,6 +1,8 @@
 package com.example.application.components;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
@@ -40,7 +42,9 @@ public class FormControls extends VerticalLayout {
     public final Button resetButton;
     public final Button deleteButton;
 
-    public FormControls(BeanValidationBinder<WorkLog>  binder,  WorkLogService service) {
+    public FormControls(BeanValidationBinder<WorkLog> binder,
+            Supplier<List<Project>> getAllProjects,
+            Supplier<List<Employee>> getAllEmployees) {
         employeeDropdown = new ComboBox<>();
         datePicker = new DatePicker();
         startTimePicker = new TimePicker();
@@ -54,35 +58,33 @@ public class FormControls extends VerticalLayout {
 
         setId("workhours-edit-panel");
 
-        createLowerEditFields(service.getAllProjects());
-        createUpperEditFields(service.getAllEmployees());
-        
+        createLowerEditFields(getAllProjects.get());
+        createUpperEditFields(getAllEmployees.get());
+
         saveButton = new Button("Add");
         resetButton = new Button("Reset");
         deleteButton = new Button("Delete");
-    
+
         deleteButton.addClassName(LumoUtility.Display.HIDDEN);
 
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
+                ButtonVariant.LUMO_ERROR);
         entryEditPanelFooter.add(deleteButton, resetButton, saveButton);
 
-        entryEditPanelFooter.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        entryEditPanelFooter
+                .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         entryEditPanelFooter.setWidth("100%");
 
         bindFields(binder);
-        
-        add(upperEditFields, lowerEditFields, entryEditPanelFooter);
 
+        add(upperEditFields, lowerEditFields, entryEditPanelFooter);
     }
 
     private void createUpperEditFields(List<Employee> employeeList) {
-        upperEditFields.setResponsiveSteps(
-            new ResponsiveStep("0", 1),
-            new ResponsiveStep("300px", 2),
-            new ResponsiveStep("500px", 4)
-        );
-        
+        upperEditFields.setResponsiveSteps(new ResponsiveStep("0", 1),
+                new ResponsiveStep("300px", 2), new ResponsiveStep("500px", 4));
+
         employeeDropdown.setPrefixComponent(new Icon("vaadin", "user"));
         employeeDropdown.setPlaceholder("Employee");
         employeeDropdown.setItems(employeeList);
@@ -92,21 +94,23 @@ public class FormControls extends VerticalLayout {
         datePicker.setRequired(true);
         datePicker.setRequiredIndicatorVisible(false);
         datePicker.setPlaceholder("Date");
-        
+
         startTimePicker.setRequired(true);
         startTimePicker.setRequiredIndicatorVisible(false);
         startTimePicker.setPlaceholder("Arrival");
-        
+
         absentField.setStep(15);
         absentField.setStepButtonsVisible(true);
         absentField.setRequired(true);
         absentField.setRequiredIndicatorVisible(false);
         absentField.setPlaceholder("Absent");
-        
-        upperEditFields.add(employeeDropdown, datePicker, startTimePicker, absentField);
+
+        upperEditFields.add(employeeDropdown, datePicker, startTimePicker,
+                absentField);
         upperEditFields.addClassName("form-control-upper-fields");
 
     }
+
     private void createLowerEditFields(List<Project> projectList) {
 
         minutesField.setStep(15);
@@ -114,38 +118,42 @@ public class FormControls extends VerticalLayout {
         projectsDropdown.setItems(projectList);
 
         lowerEditFields.setColspan(description, 3);
-        lowerEditFields.setResponsiveSteps(
-            new ResponsiveStep("0", 3),
-            new ResponsiveStep("300px", 5)
-        );
-        
+        lowerEditFields.setResponsiveSteps(new ResponsiveStep("0", 3),
+                new ResponsiveStep("300px", 5));
+
         lowerEditFields.add(minutesField, description, projectsDropdown);
         lowerEditFields.addClassName("form-control-lower-fields");
     }
-    private void bindFields(BeanValidationBinder<WorkLog>  binder) {
+
+    private void bindFields(BeanValidationBinder<WorkLog> binder) {
         binder.bind(projectsDropdown, WorkLog::getProject, WorkLog::setProject);
-        binder.bind(description, WorkLog::getDescription, WorkLog::setDescription);
+        binder.bind(description, WorkLog::getDescription,
+                WorkLog::setDescription);
         binder.bind(minutesField, WorkLog::getMinutes, WorkLog::setMinutes);
-        binder.bind(employeeDropdown, WorkLog::getEmployee, WorkLog::setEmployee);
+        binder.bind(employeeDropdown, WorkLog::getEmployee,
+                WorkLog::setEmployee);
         binder.bind(datePicker, WorkLog::getStartDate, WorkLog::setStartDate);
-        binder.bind(startTimePicker, WorkLog::getStartTime, WorkLog::setStartTime);
+        binder.bind(startTimePicker, WorkLog::getStartTime,
+                WorkLog::setStartTime);
         binder.bind(absentField, WorkLog::getAbsent, WorkLog::setAbsent);
     }
+
     public void setDefaults() {
-       absentField.setValue(30);
+        absentField.setValue(30);
     }
     /*
-     * @param type String for selecting which button to return. 
-     * Possible values are SAVE, DELETE or RESET.
+     * @param type String for selecting which button to return. Possible values
+     * are SAVE, DELETE or RESET.
+     *
      * @return the corresponding button
      */
     // public Button getButton(String type) {
-    //     switch(type) {
-    //         case "SAVE": return this.saveButton;
-    //         case "RESET": return this.resetButton;
-    //         case "DELETE": return this.deleteButton;   
-    //         default: return null; 
-    //     }
+    // switch(type) {
+    // case "SAVE": return this.saveButton;
+    // case "RESET": return this.resetButton;
+    // case "DELETE": return this.deleteButton;
+    // default: return null;
     // }
-    
+    // }
+
 }
