@@ -29,25 +29,25 @@ public class WeeklySummary extends VerticalLayout {
         setId("weekly-summary-panel");
         addClassNames(TextAlignment.LEFT);
         setWidth("100%");
-        
-        int weekNumber = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
-        welcomeMessage = new H2("Hi " + name + ", it's week "+ weekNumber);
+        int weekNumber = LocalDate.now()
+                .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+
+        welcomeMessage = new H2("Hi " + name + ", it's week " + weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
 
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             hours[i] = new H4();
         }
-            
+
         loadWeekly(service, name);
     }
 
-
-    public static String reduceMinutesListToString(List<Integer> minutesList) { 
+    public static String reduceMinutesListToString(List<Integer> minutesList) {
         int minutesReduced = minutesList.stream().reduce(0, Integer::sum);
 
-        String hoursString = (minutesReduced / 60)+"h";
-        String minutesString = (minutesReduced % 60)+"min";
+        String hoursString = (minutesReduced / 60) + "h";
+        String minutesString = (minutesReduced % 60) + "min";
 
         return (hoursString + minutesString);
     }
@@ -58,19 +58,21 @@ public class WeeklySummary extends VerticalLayout {
         Employee currentEmployee = service.getEmployee(2);
         LocalDate now = LocalDate.now(), currentDate;
         int weekDayNumber = now.getDayOfWeek().getValue();
-        String[] weekDays = {"Mon", "Tue", "Wed", "Thu", "Fri"};
-        LocalDate localMonday = now.minusDays(weekDayNumber-1);
+        String[] weekDays = { "Mon", "Tue", "Wed", "Thu", "Fri" };
+        LocalDate localMonday = now.minusDays(weekDayNumber - 1);
         Div weekDayWrapper;
         Paragraph weekDayInfo;
-        
+
         for (int i = 0; i < 5; i++) {
             weekDayWrapper = new Div();
             currentDate = localMonday.plusDays(i);
-            List<Integer> minutesList = service.getTimesForDay(currentDate, currentEmployee.getId());
+            List<Integer> minutesList = service.getTimesForDay(currentDate,
+                    currentEmployee.getId());
 
-            hours[i].setText(this.reduceMinutesListToString(minutesList)); 
-            weekDayInfo = new Paragraph(weekDays[i] + " " + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
-            
+            hours[i].setText(this.reduceMinutesListToString(minutesList));
+            weekDayInfo = new Paragraph(weekDays[i] + " "
+                    + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
+
             weekDayWrapper.add(weekDayInfo, hours[i]);
             weekDayWrapper.addClassName("weekly-summary-week-day");
             this.weekDaysSummary.add(weekDayWrapper);
@@ -83,15 +85,15 @@ public class WeeklySummary extends VerticalLayout {
 
     public void updateWeekDaySummary(LocalDate date, String newMinutes) {
         int dayOfTheWeek = date.getDayOfWeek().getValue();
-        hours[dayOfTheWeek-1].setText(newMinutes);
+        hours[dayOfTheWeek - 1].setText(newMinutes);
     }
 
     public void toggleSummary() {
         String className = "weekly-summary-panel-closed";
 
-        if(this.hasClassName(className)) {
+        if (this.hasClassName(className)) {
             this.removeClassName(className);
-        }else {
+        } else {
             this.addClassName(className);
         }
     }

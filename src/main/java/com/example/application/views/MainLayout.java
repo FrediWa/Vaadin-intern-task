@@ -1,6 +1,5 @@
 package com.example.application.views;
 
-
 import com.example.application.views.wh.WH;
 import com.example.application.components.UserInfo;
 import com.example.application.views.empty2.Empty2View;
@@ -43,17 +42,20 @@ public class MainLayout extends AppLayout {
 
         private final Class<? extends Component> view;
 
-        public MenuItemInfo(String menuTitle, Component icon, Class<? extends Component> view) {
+        public MenuItemInfo(String menuTitle, Component icon,
+                Class<? extends Component> view) {
             this.view = view;
             RouterLink link = new RouterLink();
             // Use Lumo classnames for various styling
-            link.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM, AlignItems.CENTER, Padding.Horizontal.SMALL,
+            link.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM,
+                    AlignItems.CENTER, Padding.Horizontal.SMALL,
                     TextColor.BODY);
             link.setRoute(view);
 
             Span text = new Span(menuTitle);
             // Use Lumo classnames for various styling
-            text.addClassNames(FontWeight.MEDIUM, FontSize.MEDIUM, Whitespace.NOWRAP);
+            text.addClassNames(FontWeight.MEDIUM, FontSize.MEDIUM,
+                    Whitespace.NOWRAP);
 
             if (icon != null) {
                 link.add(icon);
@@ -74,7 +76,8 @@ public class MainLayout extends AppLayout {
 
     private Component createHeaderContent() {
         Header header = new Header();
-        header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
+        header.addClassNames(BoxSizing.BORDER, Display.FLEX,
+                FlexDirection.COLUMN, Width.FULL);
 
         HorizontalLayout layout = new HorizontalLayout();
         layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
@@ -86,7 +89,8 @@ public class MainLayout extends AppLayout {
 
         // Wrap the links in a list; improves accessibility
         UnorderedList list = new UnorderedList();
-        list.addClassNames(Display.FLEX, Gap.SMALL, ListStyleType.NONE, Margin.NONE, Padding.NONE);
+        list.addClassNames(Display.FLEX, Gap.SMALL, ListStyleType.NONE,
+                Margin.NONE, Padding.NONE);
         nav.add(list);
         UserInfo userInfo = new UserInfo("Joseph Mama", "System Admin");
         nav.add(userInfo);
@@ -102,10 +106,15 @@ public class MainLayout extends AppLayout {
     }
 
     private MenuItemInfo[] createMenuItems() {
-        return new MenuItemInfo[]{ //
-                new MenuItemInfo("Work Hours", LineAwesomeIcon.BUSINESS_TIME_SOLID.create(), WH.class), //
-                new MenuItemInfo("Vacations", LineAwesomeIcon.SUITCASE_ROLLING_SOLID.create(), Empty2View.class), //
-                new MenuItemInfo("Sick Leave", LineAwesomeIcon.NOTES_MEDICAL_SOLID.create(), Empty2View.class), //
+        return new MenuItemInfo[] { //
+                new MenuItemInfo("Work Hours",
+                        LineAwesomeIcon.BUSINESS_TIME_SOLID.create(), WH.class), //
+                new MenuItemInfo("Vacations",
+                        LineAwesomeIcon.SUITCASE_ROLLING_SOLID.create(),
+                        Empty2View.class), //
+                new MenuItemInfo("Sick Leave",
+                        LineAwesomeIcon.NOTES_MEDICAL_SOLID.create(),
+                        Empty2View.class), //
 
         };
     }

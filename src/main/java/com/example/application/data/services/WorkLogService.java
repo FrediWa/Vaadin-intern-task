@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-@Service 
+@Service
 public class WorkLogService {
     private final ProjectRepository projectRepository;
     private final EmployeeRepository employeeRepository;
     private final WorkLogRepository workLogRepository;
 
     public WorkLogService(EmployeeRepository employeeRepository,
-                          ProjectRepository projectRepository,
-                          WorkLogRepository timesRepository) {
+            ProjectRepository projectRepository,
+            WorkLogRepository timesRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
         this.workLogRepository = timesRepository;
@@ -54,23 +54,26 @@ public class WorkLogService {
     public void saveWorkLog(WorkLog newLog) {
         workLogRepository.save(newLog);
     }
-    public void deleteOne(WorkLog workLog) {    
+
+    public void deleteOne(WorkLog workLog) {
         workLogRepository.delete(workLog);
     }
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
+
     public List<WorkLog> getAllTimes() {
         return workLogRepository.findAll();
     }
 
     public List<Integer> getTimesForDay(LocalDate date, long employee_id) {
-        List<WorkLog> workLogs = workLogRepository.getMinutesForDay(date, employee_id);
+        List<WorkLog> workLogs = workLogRepository.getMinutesForDay(date,
+                employee_id);
         List<Integer> minutesList = new ArrayList<>();
         for (WorkLog logEntry : workLogs)
             minutesList.add(logEntry.getMinutes());
         return minutesList;
     }
-    
+
 }

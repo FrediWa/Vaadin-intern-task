@@ -13,8 +13,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkLogRepository extends JpaRepository<WorkLog, Long> {
     /*
-     * The error is here, the WorkLog is mapped to the correct table through the model
+     * The error is here, the WorkLog is mapped to the correct table through the
+     * model
      */
-    @Query(value = "SELECT w FROM WorkLog w WHERE w.startDate = :date AND w.employee.id = :employeeId") 
+    @Query(value = "SELECT w FROM WorkLog w WHERE w.startDate = :date AND w.employee.id = :employeeId")
     List<WorkLog> getMinutesForDay(LocalDate date, long employeeId);
 }

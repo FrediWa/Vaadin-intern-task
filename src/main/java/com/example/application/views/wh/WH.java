@@ -33,12 +33,12 @@ public class WH extends Div {
     private final Grid<WorkLog> grid;
     private final FormControls formControls;
     private final WeeklySummary weeklySummary;
-    
+
     private WorkLog currentWorkLog;
-    
+
     public WH(WorkLogService service) {
         addClassName("workhours-view");
-        
+
         this.service = service;
 
         binder = new BeanValidationBinder<>(WorkLog.class);
@@ -49,11 +49,16 @@ public class WH extends Div {
         Div entryEditPanel = new Div();
 
         grid = new Grid<>(WorkLog.class, false);
-        grid.addColumn(WorkLog::getStartDate).setHeader("Date").setSortable(true);
-        grid.addColumn(WorkLog::getMinutes).setHeader("Minutes").setSortable(true);
-        grid.addColumn(WorkLog::getProjectName).setHeader("Project").setSortable(true);
-        grid.addColumn(WorkLog::getEmployeeName).setHeader("Employee").setSortable(true);
-        grid.addColumn(WorkLog::getDescription).setHeader("Description").setSortable(true);
+        grid.addColumn(WorkLog::getStartDate).setHeader("Date")
+                .setSortable(true);
+        grid.addColumn(WorkLog::getMinutes).setHeader("Minutes")
+                .setSortable(true);
+        grid.addColumn(WorkLog::getProjectName).setHeader("Project")
+                .setSortable(true);
+        grid.addColumn(WorkLog::getEmployeeName).setHeader("Employee")
+                .setSortable(true);
+        grid.addColumn(WorkLog::getDescription).setHeader("Description")
+                .setSortable(true);
 
         List<WorkLog> workLogs = service.getAllTimes();
         grid.setItems(workLogs);
@@ -63,33 +68,36 @@ public class WH extends Div {
             if (noSelection) {
                 populateForm(event.getValue());
                 currentWorkLog = event.getValue();
-                formControls.deleteButton.removeClassName(LumoUtility.Display.HIDDEN);
-            }
-            else {
+                formControls.deleteButton
+                        .removeClassName(LumoUtility.Display.HIDDEN);
+            } else {
                 resetForm();
-                formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
+                formControls.deleteButton
+                        .addClassName(LumoUtility.Display.HIDDEN);
             }
             formControls.saveButton.setText(noSelection ? "UPDATE" : "SAVE");
             formControls.resetButton.setText(noSelection ? "RESET" : "CANCEL");
         });
-        
-        drawerToggleButton = new Button(LineAwesomeIcon.ANGLE_UP_SOLID.create());
+
+        drawerToggleButton = new Button(
+                LineAwesomeIcon.ANGLE_UP_SOLID.create());
         drawerToggleButton.addClassName("weekly-summary-button");
         drawerToggleButton.addClickListener(clickEvent -> {
             if (drawerToggleButton.hasClassName("weekly-summary-closed"))
                 drawerToggleButton.removeClassName("weekly-summary-closed");
             else
                 drawerToggleButton.addClassName("weekly-summary-closed");
-                
+
             weeklySummary.toggleSummary();
         });
 
         formControls.deleteButton.addClickListener(e -> {
             if (this.currentWorkLog != null) {
                 service.deleteOne(this.currentWorkLog);
-                workLogs.removeIf(obj -> obj.getId() == this.currentWorkLog.getId());
+                workLogs.removeIf(
+                        obj -> obj.getId() == this.currentWorkLog.getId());
                 grid.setItems(workLogs);
-            }else {
+            } else {
                 System.out.println("Someone did something illegal");
             }
             grid.select(null);
@@ -102,7 +110,7 @@ public class WH extends Div {
             resetForm();
             grid.select(null);
         });
-        
+
         formControls.saveButton.addClickListener(e -> {
             try {
                 boolean newEntry = currentWorkLog == null;
@@ -112,8 +120,9 @@ public class WH extends Div {
                 binder.writeBean(this.currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
                 Notification.show("Data updated");
-                
-                // Adding the new entry directly removes the need for a page reload.
+
+                // Adding the new entry directly removes the need for a page
+                // reload.
                 if (newEntry) {
                     workLogs.add(this.currentWorkLog);
                     grid.setItems(workLogs);
@@ -128,33 +137,34 @@ public class WH extends Div {
                 // System.out.println(validationException);
             }
         });
-    
-        add(weeklySummary,drawerToggleButton, formControls, entryEditPanel, grid);
+
+        add(weeklySummary, drawerToggleButton, formControls, entryEditPanel,
+                grid);
 
         setSizeFull();
         getStyle().set("text-align", "center");
     }
+
     private void refreshGrid() {
         grid.select(null);
         grid.getDataProvider().refreshAll();
     }
 
     private void resetForm() {
-        if (this.currentWorkLog == null) 
+        if (this.currentWorkLog == null)
             return;
 
-        weeklySummary.updateWeekDaySummary(
-            currentWorkLog.getStartDate(),
-            WeeklySummary.reduceMinutesListToString(service.getTimesForDay(currentWorkLog.getStartDate(), 2))
-        );
+        weeklySummary.updateWeekDaySummary(currentWorkLog.getStartDate(),
+                WeeklySummary.reduceMinutesListToString(service
+                        .getTimesForDay(currentWorkLog.getStartDate(), 2)));
         populateForm(null);
     }
-  
+
     private void populateForm(WorkLog entry) {
         this.currentWorkLog = entry;
         binder.readBean(this.currentWorkLog);
 
-        if (this.currentWorkLog == null) 
+        if (this.currentWorkLog == null)
             formControls.setDefaults();
     }
 }
