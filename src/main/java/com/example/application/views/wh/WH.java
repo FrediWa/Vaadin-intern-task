@@ -143,12 +143,10 @@ public class WH extends Div {
         if (this.currentWorkLog == null) 
             return;
 
-            
-            
         weeklySummary.updateWeekDaySummary(
             currentWorkLog.getStartDate(),
             WeeklySummary.reduceMinutesListToString(service.getTimesForDay(currentWorkLog.getStartDate(), 2))
-            );
+        );
         populateForm(null);
     }
   

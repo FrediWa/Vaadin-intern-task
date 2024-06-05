@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import com.example.application.data.models.Employee;
 import com.example.application.data.services.WorkLogService;
+
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;

@@ -1,7 +1,6 @@
 package com.example.application.data.models;
 
 import com.example.application.data.AbstractEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
