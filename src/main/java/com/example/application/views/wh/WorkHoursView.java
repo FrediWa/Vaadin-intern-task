@@ -26,7 +26,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 @PageTitle("Empty")
 @Route(value = ":id", layout = MainLayout.class)
 @RouteAlias(value = "")
-public class WH extends Div {
+public class WorkHoursView extends Div {
     private final WorkLogService service;
     private final Button drawerToggleButton;
     private final BeanValidationBinder<WorkLog> binder;
@@ -36,7 +36,7 @@ public class WH extends Div {
 
     private WorkLog currentWorkLog;
 
-    public WH(WorkLogService service) {
+    public WorkHoursView(WorkLogService service) {
         addClassName("workhours-view");
 
         this.service = service;

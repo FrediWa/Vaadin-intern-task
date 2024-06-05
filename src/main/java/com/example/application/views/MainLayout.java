@@ -1,6 +1,6 @@
 package com.example.application.views;
 
-import com.example.application.views.wh.WH;
+import com.example.application.views.wh.WorkHoursView;
 import com.example.application.components.UserInfo;
 import com.example.application.views.empty2.Empty2View;
 import com.vaadin.flow.component.Component;
@@ -108,7 +108,7 @@ public class MainLayout extends AppLayout {
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[] { //
                 new MenuItemInfo("Work Hours",
-                        LineAwesomeIcon.BUSINESS_TIME_SOLID.create(), WH.class), //
+                        LineAwesomeIcon.BUSINESS_TIME_SOLID.create(), WorkHoursView.class), //
                 new MenuItemInfo("Vacations",
                         LineAwesomeIcon.SUITCASE_ROLLING_SOLID.create(),
                         Empty2View.class), //
