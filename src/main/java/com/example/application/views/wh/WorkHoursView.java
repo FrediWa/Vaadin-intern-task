@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -24,7 +25,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 
 @CssImport("./themes/intern-project/views/workHours.css")
 @PageTitle("Empty")
-@Route(value = ":id", layout = MainLayout.class)
+@Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "")
 public class WorkHoursView extends Div {
     private final WorkLogService service;
@@ -33,7 +34,7 @@ public class WorkHoursView extends Div {
     private final Grid<WorkLog> grid;
     private final FormControls formControls;
     private final WeeklySummary weeklySummary;
-
+    private final DataProvider<WorkLog, Void> workLogDataProvider;
     private WorkLog currentWorkLog;
 
     public WorkHoursView(WorkLogService service) {
@@ -42,8 +43,10 @@ public class WorkHoursView extends Div {
         this.service = service;
 
         binder = new BeanValidationBinder<>(WorkLog.class);
-        formControls = new FormControls(binder, service);
-        weeklySummary = new WeeklySummary("Joseph", service);
+        formControls = new FormControls(binder, service::getAllProjects,
+                service::getAllEmployees);
+        weeklySummary = new WeeklySummary("Joseph", service::getEmployee,
+                service::getTimesForDay);
         currentWorkLog = new WorkLog();
 
         Div entryEditPanel = new Div();
@@ -60,8 +63,12 @@ public class WorkHoursView extends Div {
         grid.addColumn(WorkLog::getDescription).setHeader("Description")
                 .setSortable(true);
 
-        List<WorkLog> workLogs = service.getAllTimes();
-        grid.setItems(workLogs);
+        workLogDataProvider = DataProvider.fromCallbacks(query -> {
+            int offset = query.getOffset();
+            int limit = query.getLimit();
+            return service.getAllTimes().stream().skip(offset).limit(limit);
+        }, query -> service.getAllTimes().size());
+        grid.setItems(workLogDataProvider);
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             boolean noSelection = (event.getValue() != null);
@@ -94,16 +101,12 @@ public class WorkHoursView extends Div {
         formControls.deleteButton.addClickListener(e -> {
             if (this.currentWorkLog != null) {
                 service.deleteOne(this.currentWorkLog);
-                workLogs.removeIf(
-                        obj -> obj.getId() == this.currentWorkLog.getId());
-                grid.setItems(workLogs);
+                workLogDataProvider.refreshAll();
             } else {
                 System.out.println("Someone did something illegal");
             }
-            grid.select(null);
 
             resetForm();
-            refreshGrid();
         });
 
         formControls.resetButton.addClickListener(e -> {
@@ -120,21 +123,12 @@ public class WorkHoursView extends Div {
                 binder.writeBean(this.currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
                 Notification.show("Data updated");
-
-                // Adding the new entry directly removes the need for a page
-                // reload.
-                if (newEntry) {
-                    workLogs.add(this.currentWorkLog);
-                    grid.setItems(workLogs);
-                }
+                workLogDataProvider.refreshAll();
 
                 resetForm();
-                refreshGrid();
-
-            } catch (ObjectOptimisticLockingFailureException exception) {
-                // System.out.println(exception);
-            } catch (ValidationException validationException) {
-                // System.out.println(validationException);
+            } catch (ObjectOptimisticLockingFailureException
+                    | ValidationException exception) {
+                System.out.println(exception);
             }
         });
 
@@ -143,11 +137,6 @@ public class WorkHoursView extends Div {
 
         setSizeFull();
         getStyle().set("text-align", "center");
-    }
-
-    private void refreshGrid() {
-        grid.select(null);
-        grid.getDataProvider().refreshAll();
     }
 
     private void resetForm() {

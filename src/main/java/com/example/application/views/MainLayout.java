@@ -108,7 +108,8 @@ public class MainLayout extends AppLayout {
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[] { //
                 new MenuItemInfo("Work Hours",
-                        LineAwesomeIcon.BUSINESS_TIME_SOLID.create(), WorkHoursView.class), //
+                        LineAwesomeIcon.BUSINESS_TIME_SOLID.create(),
+                        WorkHoursView.class), //
                 new MenuItemInfo("Vacations",
                         LineAwesomeIcon.SUITCASE_ROLLING_SOLID.create(),
                         Empty2View.class), //

@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.example.application.data.models.Employee;
 import com.example.application.data.services.WorkLogService;
@@ -24,8 +26,13 @@ public class WeeklySummary extends VerticalLayout {
     Paragraph subtitle;
     HorizontalLayout weekDaysSummary;
     H4[] hours = new H4[5];
+    private final Function<Long, Employee> getEmployee;
+    private final BiFunction<LocalDate, Long, List<Integer>> getTimesForDay;
 
-    public WeeklySummary(String name, WorkLogService service) {
+    public WeeklySummary(String name, Function<Long, Employee> getEmployee,
+            BiFunction<LocalDate, Long, List<Integer>> getTimesForDay) {
+        this.getEmployee = getEmployee;
+        this.getTimesForDay = getTimesForDay;
         setId("weekly-summary-panel");
         addClassNames(TextAlignment.LEFT);
         setWidth("100%");
@@ -40,7 +47,7 @@ public class WeeklySummary extends VerticalLayout {
             hours[i] = new H4();
         }
 
-        loadWeekly(service, name);
+        loadWeekly(name);
     }
 
     public static String reduceMinutesListToString(List<Integer> minutesList) {
@@ -52,10 +59,10 @@ public class WeeklySummary extends VerticalLayout {
         return (hoursString + minutesString);
     }
 
-    public void loadWeekly(WorkLogService service, String name) {
+    public void loadWeekly(String name) {
         this.weekDaysSummary = new HorizontalLayout();
         System.out.println("Reload weekly " + name);
-        Employee currentEmployee = service.getEmployee(2);
+        Employee currentEmployee = getEmployee.apply(2L);
         LocalDate now = LocalDate.now(), currentDate;
         int weekDayNumber = now.getDayOfWeek().getValue();
         String[] weekDays = { "Mon", "Tue", "Wed", "Thu", "Fri" };
@@ -66,7 +73,7 @@ public class WeeklySummary extends VerticalLayout {
         for (int i = 0; i < 5; i++) {
             weekDayWrapper = new Div();
             currentDate = localMonday.plusDays(i);
-            List<Integer> minutesList = service.getTimesForDay(currentDate,
+            List<Integer> minutesList = getTimesForDay.apply(currentDate,
                     currentEmployee.getId());
 
             hours[i].setText(this.reduceMinutesListToString(minutesList));

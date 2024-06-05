@@ -1,6 +1,8 @@
 package com.example.application.components;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.Project;
@@ -41,7 +43,8 @@ public class FormControls extends VerticalLayout {
     public final Button deleteButton;
 
     public FormControls(BeanValidationBinder<WorkLog> binder,
-            WorkLogService service) {
+            Supplier<List<Project>> getAllProjects,
+            Supplier<List<Employee>> getAllEmployees) {
         employeeDropdown = new ComboBox<>();
         datePicker = new DatePicker();
         startTimePicker = new TimePicker();
@@ -55,8 +58,8 @@ public class FormControls extends VerticalLayout {
 
         setId("workhours-edit-panel");
 
-        createLowerEditFields(service.getAllProjects());
-        createUpperEditFields(service.getAllEmployees());
+        createLowerEditFields(getAllProjects.get());
+        createUpperEditFields(getAllEmployees.get());
 
         saveButton = new Button("Add");
         resetButton = new Button("Reset");
@@ -76,7 +79,6 @@ public class FormControls extends VerticalLayout {
         bindFields(binder);
 
         add(upperEditFields, lowerEditFields, entryEditPanelFooter);
-
     }
 
     private void createUpperEditFields(List<Employee> employeeList) {
