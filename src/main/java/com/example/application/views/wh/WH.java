@@ -24,7 +24,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 
 @CssImport("./themes/intern-project/views/workHours.css")
 @PageTitle("Empty")
-@Route(value = "", layout = MainLayout.class)
+@Route(value = ":id", layout = MainLayout.class)
 @RouteAlias(value = "")
 public class WH extends Div {
     private final WorkLogService service;
