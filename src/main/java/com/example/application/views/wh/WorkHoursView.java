@@ -5,9 +5,11 @@ import com.example.application.components.WeeklySummary;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.BindingException;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.PageTitle;
@@ -83,7 +85,7 @@ public class WorkHoursView extends Div {
                         .addClassName(LumoUtility.Display.HIDDEN);
             }
             formControls.saveButton.setText(noSelection ? "UPDATE" : "SAVE");
-            formControls.resetButton.setText(noSelection ? "RESET" : "CANCEL");
+            formControls.resetButton.setText(noSelection ? "CANCEL" : "RESET");
         });
 
         drawerToggleButton = new Button(
@@ -122,12 +124,15 @@ public class WorkHoursView extends Div {
                 }
                 binder.writeBean(this.currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
-                Notification.show("Data updated");
+                Notification.show(newEntry ? "Created" : "Updated")
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 workLogDataProvider.refreshAll();
 
-                resetForm();
+                // resetForm();
             } catch (ObjectOptimisticLockingFailureException
-                    | ValidationException exception) {
+                    | ValidationException | BindingException exception) {
+                Notification.show("Missing data in fields")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 System.out.println(exception);
             }
         });

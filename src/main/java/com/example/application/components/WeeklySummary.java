@@ -22,10 +22,10 @@ import com.vaadin.flow.theme.lumo.LumoUtility.TextAlignment;
 
 @CssImport("./themes/intern-project/components/weeklySummary.css")
 public class WeeklySummary extends VerticalLayout {
-    H2 welcomeMessage;
-    Paragraph subtitle;
-    HorizontalLayout weekDaysSummary;
-    H4[] hours = new H4[5];
+    private final H2 welcomeMessage;
+    private final Paragraph subtitle;
+    private final HorizontalLayout weekDaysSummary;
+    private final H4[] hours = new H4[5];
     private final Function<Long, Employee> getEmployee;
     private final BiFunction<LocalDate, Long, List<Integer>> getTimesForDay;
 
@@ -40,6 +40,7 @@ public class WeeklySummary extends VerticalLayout {
         int weekNumber = LocalDate.now()
                 .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
+        weekDaysSummary = new HorizontalLayout();
         welcomeMessage = new H2("Hi " + name + ", it's week " + weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
 
@@ -60,7 +61,6 @@ public class WeeklySummary extends VerticalLayout {
     }
 
     public void loadWeekly(String name) {
-        this.weekDaysSummary = new HorizontalLayout();
         System.out.println("Reload weekly " + name);
         Employee currentEmployee = getEmployee.apply(2L);
         LocalDate now = LocalDate.now(), currentDate;
