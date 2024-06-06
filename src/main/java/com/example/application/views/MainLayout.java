@@ -1,10 +1,15 @@
 package com.example.application.views;
 
-import com.example.application.views.wh.WorkHoursView;
 import com.example.application.components.UserInfo;
+import com.example.application.data.models.Employee;
+import com.example.application.data.models.MyUserDetails;
+import com.example.application.data.services.SecurityService;
+import com.example.application.data.services.WorkLogService;
 import com.example.application.views.empty2.Empty2View;
+import com.example.application.views.workhours.WorkHoursView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
@@ -28,12 +33,16 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
 import com.vaadin.flow.theme.lumo.LumoUtility.Whitespace;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
+    private final SecurityService securityService;
+    private final WorkLogService service;
 
     /**
      * A simple navigation item component, based on ListItem element.
@@ -70,7 +79,9 @@ public class MainLayout extends AppLayout {
 
     }
 
-    public MainLayout() {
+    public MainLayout(SecurityService securityService, WorkLogService service) {
+        this.securityService = securityService;
+        this.service = service;
         addToNavbar(createHeaderContent());
     }
 
@@ -92,14 +103,16 @@ public class MainLayout extends AppLayout {
         list.addClassNames(Display.FLEX, Gap.SMALL, ListStyleType.NONE,
                 Margin.NONE, Padding.NONE);
         nav.add(list);
-        UserInfo userInfo = new UserInfo("Joseph Mama", "System Admin");
+        MyUserDetails userDetails = securityService.getAuthenticatedUser();
+        Employee userEmployee = service.getEmployee(userDetails.getEmployeeId());
+        UserInfo userInfo = new UserInfo(userEmployee.getName(), userDetails.getRole(), securityService::logout);
         nav.add(userInfo);
-
+    
         for (MenuItemInfo menuItem : createMenuItems()) {
             list.add(menuItem);
 
         }
-
+        
         layout.add(nav, userInfo);
         header.add(layout);
         return header;

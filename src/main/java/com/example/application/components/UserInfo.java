@@ -2,6 +2,7 @@ package com.example.application.components;
 
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,7 +16,7 @@ public class UserInfo extends HorizontalLayout {
     Paragraph userName;
     Paragraph userRole;
 
-    public UserInfo(String name, String role) {
+    public UserInfo(String name, String role, Runnable logout) {
         setAlignItems(FlexComponent.Alignment.CENTER);
         userAvatar = new Avatar(name);
         userName = new Paragraph(name);
@@ -28,8 +29,9 @@ public class UserInfo extends HorizontalLayout {
         userAvatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
 
         Div userNameAndRole = new Div();
-
+        Button logoutButton = new Button("Log out", e -> logout.run());
+                    
         userNameAndRole.add(userName, userRole);
-        add(userNameAndRole, userAvatar);
+        add(logoutButton, userNameAndRole, userAvatar);
     }
 }
