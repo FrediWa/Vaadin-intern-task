@@ -1,5 +1,6 @@
 package com.example.application.data.services;
 
+import com.example.application.data.models.MyUserDetails;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -13,8 +14,8 @@ public class SecurityService {
         this.authenticationContext = authenticationContext;
     }
 
-    public UserDetails getAuthenticatedUser() {
-        return authenticationContext.getAuthenticatedUser(UserDetails.class)
+    public MyUserDetails getAuthenticatedUser() {
+        return authenticationContext.getAuthenticatedUser(MyUserDetails.class)
                 .get();
     }
 

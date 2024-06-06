@@ -22,6 +22,10 @@ public class User extends AbstractEntity {
     @Column(name = "password")
     private String password = "";
 
+    @NotEmpty
+    @Column(name = "employee_id")
+    private long employeeId;
+
     public @NotEmpty String getUsername() {
         return username;
     }
@@ -44,5 +48,9 @@ public class User extends AbstractEntity {
 
     public void setPassword(@NotEmpty String password) {
         this.password = password;
+    }
+
+    public long getEmployeeId() {
+        return this.employeeId;
     }
 }

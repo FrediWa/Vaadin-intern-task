@@ -19,7 +19,10 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import jakarta.annotation.security.PermitAll;
 
+import com.example.application.data.models.Employee;
+import com.example.application.data.models.MyUserDetails;
 import com.example.application.data.models.WorkLog;
+import com.example.application.data.services.SecurityService;
 import com.example.application.data.services.WorkLogService;
 import com.example.application.views.MainLayout;
 
@@ -41,15 +44,17 @@ public class WorkHoursView extends Div {
     private final DataProvider<WorkLog, Void> workLogDataProvider;
     private WorkLog currentWorkLog;
 
-    public WorkHoursView(WorkLogService service) {
+    public WorkHoursView(WorkLogService service, SecurityService securityService) {
         addClassName("workhours-view");
 
         this.service = service;
+        MyUserDetails userDetails = securityService.getAuthenticatedUser();
+        Employee userEmployee = service.getEmployee(userDetails.getEmployeeId());
 
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service::getAllProjects,
                 service::getAllEmployees);
-        weeklySummary = new WeeklySummary("Joseph", service::getEmployee,
+        weeklySummary = new WeeklySummary(userEmployee, service::getEmployee,
                 service::getTimesForDay);
         currentWorkLog = new WorkLog();
 

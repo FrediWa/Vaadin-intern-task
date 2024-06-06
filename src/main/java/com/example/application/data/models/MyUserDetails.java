@@ -12,12 +12,14 @@ public class MyUserDetails implements UserDetails {
     private String username;
     private String password;
     private String role;
+    private long employeeId;
     private List<GrantedAuthority> grantedAuthorities;
 
     public MyUserDetails(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.role = user.getRole();
+        this.employeeId = user.getEmployeeId();
         this.grantedAuthorities = Arrays
                 .asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
@@ -53,5 +55,7 @@ public class MyUserDetails implements UserDetails {
     public boolean isEnabled() {
         return (true);
     };
-
+    public long getEmployeeId() {
+        return employeeId;
+    }
 }

@@ -26,12 +26,10 @@ public class WeeklySummary extends VerticalLayout {
     private final Paragraph subtitle;
     private final HorizontalLayout weekDaysSummary;
     private final H4[] hours = new H4[5];
-    private final Function<Long, Employee> getEmployee;
     private final BiFunction<LocalDate, Long, List<Integer>> getTimesForDay;
 
-    public WeeklySummary(String name, Function<Long, Employee> getEmployee,
+    public WeeklySummary(Employee userEmployee, Function<Long, Employee> getEmployee,
             BiFunction<LocalDate, Long, List<Integer>> getTimesForDay) {
-        this.getEmployee = getEmployee;
         this.getTimesForDay = getTimesForDay;
         setId("weekly-summary-panel");
         addClassNames(TextAlignment.LEFT);
@@ -41,14 +39,14 @@ public class WeeklySummary extends VerticalLayout {
                 .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
         weekDaysSummary = new HorizontalLayout();
-        welcomeMessage = new H2("Hi " + name + ", it's week " + weekNumber);
+        welcomeMessage = new H2("Hi " + userEmployee.getFirstname() + ", it's week " + weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
 
         for (int i = 0; i < 5; i++) {
             hours[i] = new H4();
         }
 
-        loadWeekly(name);
+        loadWeekly(userEmployee);
     }
 
     public static String reduceMinutesListToString(List<Integer> minutesList) {
@@ -60,9 +58,8 @@ public class WeeklySummary extends VerticalLayout {
         return (hoursString + minutesString);
     }
 
-    public void loadWeekly(String name) {
-        System.out.println("Reload weekly " + name);
-        Employee currentEmployee = getEmployee.apply(2L);
+    public void loadWeekly(Employee employee) {
+        System.out.println("Reload weekly " + employee.getName());
         LocalDate now = LocalDate.now(), currentDate;
         int weekDayNumber = now.getDayOfWeek().getValue();
         String[] weekDays = { "Mon", "Tue", "Wed", "Thu", "Fri" };
@@ -74,9 +71,9 @@ public class WeeklySummary extends VerticalLayout {
             weekDayWrapper = new Div();
             currentDate = localMonday.plusDays(i);
             List<Integer> minutesList = getTimesForDay.apply(currentDate,
-                    currentEmployee.getId());
+                    employee.getId());
 
-            hours[i].setText(this.reduceMinutesListToString(minutesList));
+            hours[i].setText(WeeklySummary.reduceMinutesListToString(minutesList));
             weekDayInfo = new Paragraph(weekDays[i] + " "
                     + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
 

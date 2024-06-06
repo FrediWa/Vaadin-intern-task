@@ -22,6 +22,10 @@ public class Employee extends AbstractEntity {
         return firstName + " " + lastName;
     }
 
+    public String getFirstname() {
+        return firstName;
+    }
+
     @Override
     public String toString() {
         return firstName + " " + lastName;
