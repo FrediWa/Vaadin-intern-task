@@ -3,6 +3,7 @@ package com.example.application.components;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -30,6 +31,7 @@ public class UserInfo extends HorizontalLayout {
 
         Div userNameAndRole = new Div();
         Button logoutButton = new Button("Log out", e -> logout.run());
+        logoutButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
                     
         userNameAndRole.add(userName, userRole);
         add(logoutButton, userNameAndRole, userAvatar);

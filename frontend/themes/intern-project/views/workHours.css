@@ -5,13 +5,13 @@ html {
 body {
     /* background-color: red; */
 }
-.workhours-view {
-    position:relative;
-    z-index: 2;
-}
 
-[part~="navbar"]{
-    background-color: red;
+vaadin-app-layout {
+    --_vaadin-app-layout-navbar-offset-size: 0!important;
+}
+vaadin-app-layout::part(navbar) {
+    color : #fff;
+    background: none;
 }
 #navbarTop * {
     background-color: red;
@@ -33,14 +33,13 @@ vaadin-grid::part(selected-row) {
 
 .header-mask{
     display: block;
-
 }
 .weekly-summary-button {
+    border-radius: 100%;
+    padding: 3px 0;
     margin:0;
-    padding:0 10px;
-    border-radius: 0 0 100px 100px;
     box-shadow: var(--lumo-box-shadow-s);
-    /* transform: translate(0, -50%); */
+    transform: translate(0, -50%);
     background-color: #fff;
     position: relative;
     z-index: 10000;
@@ -50,4 +49,7 @@ vaadin-grid::part(selected-row) {
     transform: rotate(180deg);
 }
 
+header a.text-body {
+    color: #fff;
+}
 

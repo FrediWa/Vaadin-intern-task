@@ -76,9 +76,7 @@ public class MainLayout extends AppLayout {
         public Class<?> getView() {
             return view;
         }
-
     }
-
     public MainLayout(SecurityService securityService, WorkLogService service) {
         this.securityService = securityService;
         this.service = service;

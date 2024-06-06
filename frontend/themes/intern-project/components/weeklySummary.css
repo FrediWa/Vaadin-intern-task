@@ -1,10 +1,11 @@
 #weekly-summary-panel {
-    padding: 50px 5% 30px 5%;
+    padding: 70px 5% 30px 5%;
     background: rgb(62,126,242);
     background: linear-gradient(90deg, rgba(62,126,242,1) 0%, rgba(129,87,243,1) 100%);
     z-index: 9999;
+}
 
-    transition: height 0.4s, opacity 0.2s, padding 0.1s;
+#weekly-summary-panel * {
 }
 
 #weekly-summary-panel > h2, 
@@ -37,14 +38,14 @@
 .weekly-summary-days-summary {
     width: 100%;
     border-radius: var(--lumo-border-radius-l);
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 #weekly-summary-panel.weekly-summary-panel-closed {
-    height: 0;
-    opacity: 0;
+    height: 56px;
     padding: 0 5%;
-    transition-delay: padding 0.4s;
-    transition: height 0.4s, opacity 0.4s, padding 0.1s;
     overflow: hidden;
+}
+#weekly-summary-panel.weekly-summary-panel-closed * {
+    opacity: 0;
 }
