@@ -1,4 +1,4 @@
-package com.example.application.views.wh;
+package com.example.application.views.workhours;
 
 import com.example.application.components.FormControls;
 import com.example.application.components.WeeklySummary;
@@ -16,11 +16,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import jakarta.annotation.security.PermitAll;
+
 import com.example.application.data.models.WorkLog;
 import com.example.application.data.services.WorkLogService;
 import com.example.application.views.MainLayout;
-
-import java.util.List;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -29,6 +30,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 @PageTitle("Empty")
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "")
+@PermitAll
 public class WorkHoursView extends Div {
     private final WorkLogService service;
     private final Button drawerToggleButton;
@@ -125,7 +127,7 @@ public class WorkHoursView extends Div {
                 binder.writeBean(this.currentWorkLog);
                 service.saveWorkLog(currentWorkLog);
                 Notification.show(newEntry ? "Created" : "Updated")
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 workLogDataProvider.refreshAll();
 
                 // resetForm();

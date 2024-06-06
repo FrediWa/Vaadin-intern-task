@@ -1,6 +1,5 @@
 package com.example.application.data;
 
-import com.example.application.data.models.Employee;
 import com.example.application.data.models.WorkLog;
 
 import java.time.LocalDate;

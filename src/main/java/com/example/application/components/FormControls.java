@@ -65,6 +65,8 @@ public class FormControls extends VerticalLayout {
         resetButton = new Button("Reset");
         deleteButton = new Button("Delete");
 
+        saveButton.setId("vaadin-add-button");
+
         deleteButton.addClassName(LumoUtility.Display.HIDDEN);
 
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

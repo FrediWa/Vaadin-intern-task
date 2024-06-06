@@ -1,10 +1,12 @@
 package com.example.application.views;
 
-import com.example.application.views.wh.WorkHoursView;
 import com.example.application.components.UserInfo;
+import com.example.application.data.services.SecurityService;
 import com.example.application.views.empty2.Empty2View;
+import com.example.application.views.workhours.WorkHoursView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
@@ -34,6 +36,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
+    private final SecurityService securityService;
 
     /**
      * A simple navigation item component, based on ListItem element.
@@ -70,7 +73,8 @@ public class MainLayout extends AppLayout {
 
     }
 
-    public MainLayout() {
+    public MainLayout(SecurityService securityService) {
+        this.securityService = securityService;
         addToNavbar(createHeaderContent());
     }
 
@@ -99,8 +103,8 @@ public class MainLayout extends AppLayout {
             list.add(menuItem);
 
         }
-
-        layout.add(nav, userInfo);
+        Button logout = new Button("Log out", e -> securityService.logout());
+        layout.add(nav, userInfo, logout);
         header.add(layout);
         return header;
     }
