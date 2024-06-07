@@ -1,4 +1,4 @@
-package com.example.application.views.empty2;
+package com.example.application.views.empty;
 
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.html.H2;
@@ -9,11 +9,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
-@PageTitle("Empty2")
-@Route(value = "empty", layout = MainLayout.class)
-public class Empty2View extends VerticalLayout {
+import jakarta.annotation.security.PermitAll;
 
-    public Empty2View() {
+@PageTitle("Empty")
+@PermitAll
+@Route(value = "empty", layout = MainLayout.class)
+public class EmptyView extends VerticalLayout {
+
+    public EmptyView() {
         setSpacing(false);
 
         Image img = new Image("images/empty-plant.png", "placeholder plant");

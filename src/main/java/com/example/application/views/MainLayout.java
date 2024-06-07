@@ -5,11 +5,10 @@ import com.example.application.data.models.Employee;
 import com.example.application.data.models.MyUserDetails;
 import com.example.application.data.services.SecurityService;
 import com.example.application.data.services.WorkLogService;
-import com.example.application.views.empty2.Empty2View;
+import com.example.application.views.empty.EmptyView;
 import com.example.application.views.workhours.WorkHoursView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
@@ -34,7 +33,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
 import com.vaadin.flow.theme.lumo.LumoUtility.Whitespace;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
@@ -125,10 +123,10 @@ public class MainLayout extends AppLayout {
                         WorkHoursView.class), //
                 new MenuItemInfo("Vacations",
                         LineAwesomeIcon.SUITCASE_ROLLING_SOLID.create(),
-                        Empty2View.class), //
+                        EmptyView.class), //
                 new MenuItemInfo("Sick Leave",
                         LineAwesomeIcon.NOTES_MEDICAL_SOLID.create(),
-                        Empty2View.class), //
+                        EmptyView.class), //
 
         };
     }
