@@ -12,6 +12,8 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.BindingException;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -29,6 +31,7 @@ import com.example.application.views.MainLayout;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -66,20 +69,50 @@ public class WorkHoursView extends Div {
 
         grid = new Grid<>(WorkLog.class, false);
         grid.addColumn(WorkLog::getStartDate).setHeader("Date")
-                .setSortable(true);
+        .setSortProperty("startDate");
         grid.addColumn(WorkLog::getMinutes).setHeader("Minutes")
-                .setSortable(true);
+        .setSortProperty("minutes");
         grid.addColumn(WorkLog::getProjectName).setHeader("Project")
-                .setSortable(true);
+        .setSortProperty("project");
         grid.addColumn(WorkLog::getEmployeeName).setHeader("Employee")
-                .setSortable(true);
+                .setSortProperty("employee");
         grid.addColumn(WorkLog::getDescription).setHeader("Description")
-                .setSortable(true);
+                .setSortProperty("description");
 
         workLogDataProvider = DataProvider.fromCallbacks(query -> {
             int offset = query.getOffset();
             int limit = query.getLimit();
-            return service.getAllTimes().stream().skip(offset).limit(limit);
+            List<QuerySortOrder> sortOrders = query.getSortOrders();
+            Stream<WorkLog> workLogStream = service.getAllTimes().stream();
+            workLogStream = workLogStream.sorted((a, b) -> {
+                for (QuerySortOrder sortOrder : sortOrders) {
+                    int comparison;
+                    switch (sortOrder.getSorted()) {
+                        case "description":
+                            comparison = compareValues(a.getDescription(), b.getDescription(), sortOrder.getDirection());
+                            break;
+                        case "employee":
+                            comparison = compareValues(a.getEmployeeName(), b.getEmployeeName(), sortOrder.getDirection());
+                            break;
+                        case "minutes":
+                            comparison = compareValues("" + a.getMinutes(), "" + b.getMinutes(), sortOrder.getDirection());
+                            break;
+                        case "date":
+                            comparison = compareValues(a.getStartDate().toString(), b.getStartDate().toString(), sortOrder.getDirection());
+                            break;
+                        case "project":
+                            comparison = compareValues(a.getProjectName(), b.getProjectName(), sortOrder.getDirection());
+                            break;
+                        default:
+                            comparison = 0;
+                    }
+
+                    if ( comparison != 0) 
+                        return comparison;
+                }
+                return 0;
+            });
+            return workLogStream.skip(offset).limit(limit);
         }, query -> service.getAllTimes().size());
         grid.setItems(workLogDataProvider);
 
@@ -154,6 +187,11 @@ public class WorkHoursView extends Div {
         getStyle().set("text-align", "center");
     }
 
+    private int compareValues(String description, String description2, SortDirection direction) {
+        int comparison = description.compareTo(description2);
+        return (direction == SortDirection.ASCENDING) ? comparison : -comparison;
+    }
+
     private void setFormButtons(boolean entrySelected) {
         if (entrySelected) {
             formControls.deleteButton.removeClassName(LumoUtility.Display.HIDDEN);
@@ -174,9 +212,6 @@ public class WorkHoursView extends Div {
         } else {
             formControls.setSummaries(null, service::getTimesForDay);
         }
-
-        
-
     }
     private void resetForm() {
         if (this.currentWorkLog == null)
