@@ -1,6 +1,9 @@
 package com.example.application.components;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -16,6 +19,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -32,8 +36,11 @@ public class FormControls extends VerticalLayout {
     private final ComboBox<Employee> employeeDropdown;
     private final DatePicker datePicker;
     private final TimePicker startTimePicker;
-    private final FormLayout upperEditFields;
+    private final HorizontalLayout upperFields;
     private final FormLayout lowerEditFields;
+    private final FormLayout dailySummary;
+    private final TimePicker dailyDeparture;
+    private final TextField dailyTotal;
     private final TextField description;
     private final IntegerField minutesField;
     private final IntegerField absentField;
@@ -53,8 +60,11 @@ public class FormControls extends VerticalLayout {
         description = new TextField("Description");
         minutesField = new IntegerField("Minutes");
         entryEditPanelFooter = new HorizontalLayout();
-        upperEditFields = new FormLayout();
+        upperFields = new HorizontalLayout();
+        dailySummary = new FormLayout();
         lowerEditFields = new FormLayout();
+        dailyDeparture = new TimePicker();
+        dailyTotal = new TextField();
 
         setId("workhours-edit-panel");
 
@@ -79,37 +89,51 @@ public class FormControls extends VerticalLayout {
         entryEditPanelFooter.setWidth("100%");
 
         bindFields(binder);
+        H3 fromControlTitle = new H3("Add entry");
+        add(fromControlTitle, upperFields, lowerEditFields, entryEditPanelFooter);
 
-        add(upperEditFields, lowerEditFields, entryEditPanelFooter);
     }
 
     private void createUpperEditFields(List<Employee> employeeList) {
+        FormLayout upperEditFields = new FormLayout();
         upperEditFields.setResponsiveSteps(new ResponsiveStep("0", 1),
                 new ResponsiveStep("300px", 2), new ResponsiveStep("500px", 4));
 
         employeeDropdown.setPrefixComponent(new Icon("vaadin", "user"));
-        employeeDropdown.setPlaceholder("Employee");
+        employeeDropdown.setLabel("Employee");
         employeeDropdown.setItems(employeeList);
         employeeDropdown.setRequired(true);
         employeeDropdown.setRequiredIndicatorVisible(false);
 
         datePicker.setRequired(true);
         datePicker.setRequiredIndicatorVisible(false);
-        datePicker.setPlaceholder("Date");
+        datePicker.setLabel("Date");
 
         startTimePicker.setRequired(true);
         startTimePicker.setRequiredIndicatorVisible(false);
-        startTimePicker.setPlaceholder("Arrival");
+        startTimePicker.setLabel("Arrival");
 
         absentField.setStep(15);
         absentField.setStepButtonsVisible(true);
         absentField.setRequired(true);
         absentField.setRequiredIndicatorVisible(false);
-        absentField.setPlaceholder("Absent");
+        absentField.setLabel("Absent");
+
+        dailyDeparture.setReadOnly(true);
+        dailyTotal.setReadOnly(true);
+        dailyDeparture.setLabel("Departure");
+        dailyTotal.setLabel("Total");
+        dailySummary.setResponsiveSteps(new ResponsiveStep("0", 2),
+                new ResponsiveStep("300px", 2), new ResponsiveStep("500px", 2));
+        dailySummary.add(dailyDeparture, dailyTotal);
+        dailySummary.addClassName("form-control-daily-summary");
 
         upperEditFields.add(employeeDropdown, datePicker, startTimePicker,
                 absentField);
-        upperEditFields.addClassName("form-control-upper-fields");
+        upperFields.add(upperEditFields, dailySummary);
+        upperFields.setWidth("100%");
+        upperFields.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        upperFields.addClassName("form-control-upper-fields");
 
     }
 
@@ -143,19 +167,22 @@ public class FormControls extends VerticalLayout {
     public void setDefaults() {
         absentField.setValue(30);
     }
-    /*
-     * @param type String for selecting which button to return. Possible values
-     * are SAVE, DELETE or RESET.
-     *
-     * @return the corresponding button
-     */
-    // public Button getButton(String type) {
-    // switch(type) {
-    // case "SAVE": return this.saveButton;
-    // case "RESET": return this.resetButton;
-    // case "DELETE": return this.deleteButton;
-    // default: return null;
-    // }
-    // }
+
+    public void setSummaries(WorkLog workLog, BiFunction<LocalDate, Long, List<Integer>> getTimesForDay) {
+        if (workLog == null) {
+                dailyDeparture.setValue(null);
+                dailyTotal.setValue("");
+                return;
+        }
+
+        LocalTime total = WeeklySummary.reduceMinutesList(getTimesForDay.apply(workLog.getStartDate(), workLog.getEmployee().getId()));
+
+        int totalMinutes = total.getMinute();
+        int totalHours = total.getHour();
+        LocalTime departure = workLog.getStartTime().plusHours(totalHours)
+                    .plusMinutes(totalMinutes);
+        dailyDeparture.setValue(departure);
+        dailyTotal.setValue(String.format("%sh%smin", totalHours, totalMinutes));
+    }
 
 }

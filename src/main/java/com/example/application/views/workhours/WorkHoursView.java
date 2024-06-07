@@ -26,6 +26,10 @@ import com.example.application.data.services.SecurityService;
 import com.example.application.data.services.WorkLogService;
 import com.example.application.views.MainLayout;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.function.BiFunction;
+
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -84,15 +88,12 @@ public class WorkHoursView extends Div {
             if (noSelection) {
                 populateForm(event.getValue());
                 currentWorkLog = event.getValue();
-                formControls.deleteButton
-                        .removeClassName(LumoUtility.Display.HIDDEN);
             } else {
                 resetForm();
-                formControls.deleteButton
-                        .addClassName(LumoUtility.Display.HIDDEN);
             }
-            formControls.saveButton.setText(noSelection ? "UPDATE" : "SAVE");
-            formControls.resetButton.setText(noSelection ? "CANCEL" : "RESET");
+            
+            setFormButtons(noSelection);
+            updateSummaries();
         });
 
         drawerToggleButton = new Button(
@@ -114,12 +115,13 @@ public class WorkHoursView extends Div {
             } else {
                 System.out.println("Someone did something illegal");
             }
-
+            updateSummaries();
             resetForm();
         });
 
         formControls.resetButton.addClickListener(e -> {
             resetForm();
+            updateSummaries();
             grid.select(null);
         });
 
@@ -142,6 +144,7 @@ public class WorkHoursView extends Div {
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 System.out.println(exception);
             }
+            updateSummaries();
         });
 
         add(weeklySummary, drawerToggleButton, formControls, entryEditPanel,
@@ -151,17 +154,40 @@ public class WorkHoursView extends Div {
         getStyle().set("text-align", "center");
     }
 
+    private void setFormButtons(boolean entrySelected) {
+        if (entrySelected) {
+            formControls.deleteButton.removeClassName(LumoUtility.Display.HIDDEN);
+        } else {
+            formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
+        }
+            
+        formControls.saveButton.setText(entrySelected ? "UPDATE" : "SAVE");
+        formControls.resetButton.setText(entrySelected ? "CANCEL" : "RESET");
+    }
+
+    private void updateSummaries() {
+        if (currentWorkLog != null) {
+            weeklySummary.updateWeekDaySummary(currentWorkLog.getStartDate(),
+            WeeklySummary.localTimeToString(WeeklySummary.reduceMinutesList(service
+                    .getTimesForDay(currentWorkLog.getStartDate(), 2))));
+            formControls.setSummaries(currentWorkLog, service::getTimesForDay);
+        } else {
+            formControls.setSummaries(null, service::getTimesForDay);
+        }
+
+        
+
+    }
     private void resetForm() {
         if (this.currentWorkLog == null)
             return;
 
-        weeklySummary.updateWeekDaySummary(currentWorkLog.getStartDate(),
-                WeeklySummary.reduceMinutesListToString(service
-                        .getTimesForDay(currentWorkLog.getStartDate(), 2)));
+        setFormButtons(false);
         populateForm(null);
     }
 
     private void populateForm(WorkLog entry) {
+        
         this.currentWorkLog = entry;
         binder.readBean(this.currentWorkLog);
 

@@ -1,7 +1,7 @@
 #workhours-edit-panel {
     width: initial!important;
-    margin: 4vw 5%;
-    padding: 15px;
+    margin: 1vw 5%;
+    padding: 30px 30px 15px 30px;
     border-radius: var(--lumo-border-radius-l);
     box-shadow: var(--lumo-box-shadow-s);
 }
@@ -19,4 +19,11 @@
     --vaadin-input-field-border-radius: 50px;
     --vaadin-input-field-height: var(--lumo-size-s)
 }
+
+
+.form-control-daily-summary {
+    --vaadin-input-field-background: #ff0000; /* WHAT */
+    --vaadin-input-field-readonly-border: solid 1px #C5CAD2;
+}
+
 
