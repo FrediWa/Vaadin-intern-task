@@ -1,6 +1,7 @@
 package com.example.application.components;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.List;
@@ -49,13 +50,17 @@ public class WeeklySummary extends VerticalLayout {
         loadWeekly(userEmployee);
     }
 
-    public static String reduceMinutesListToString(List<Integer> minutesList) {
+    public static String localTimeToString(LocalTime time) {
+        return(String.format("%sh%smin", time.getHour(), time.getMinute()));
+    }   
+
+    public static LocalTime reduceMinutesList(List<Integer> minutesList) {
         int minutesReduced = minutesList.stream().reduce(0, Integer::sum);
 
-        String hoursString = (minutesReduced / 60) + "h";
-        String minutesString = (minutesReduced % 60) + "min";
+        int hours = (minutesReduced / 60);
+        int minutes = (minutesReduced % 60);
 
-        return (hoursString + minutesString);
+        return (LocalTime.of(hours, minutes));
     }
 
     public void loadWeekly(Employee employee) {
@@ -73,7 +78,7 @@ public class WeeklySummary extends VerticalLayout {
             List<Integer> minutesList = getTimesForDay.apply(currentDate,
                     employee.getId());
 
-            hours[i].setText(WeeklySummary.reduceMinutesListToString(minutesList));
+            hours[i].setText(WeeklySummary.localTimeToString(WeeklySummary.reduceMinutesList(minutesList)));
             weekDayInfo = new Paragraph(weekDays[i] + " "
                     + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
 
