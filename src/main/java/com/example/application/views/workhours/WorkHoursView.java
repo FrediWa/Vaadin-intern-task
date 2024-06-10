@@ -20,6 +20,7 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.ConstraintViolationException;
 
 import com.example.application.data.models.Employee;
 import com.example.application.data.models.MyUserDetails;
@@ -179,13 +180,15 @@ public class WorkHoursView extends Div {
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 workLogDataProvider.refreshAll();
 
+                updateSummaries();
+                resetForm();
+
             } catch (ObjectOptimisticLockingFailureException
-                    | ValidationException | BindingException exception) {
+                    | ValidationException | BindingException | ConstraintViolationException exception) {
                 Notification.show("Missing data in fields")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 System.out.println(exception);
             }
-            updateSummaries();
         });
 
         add(weeklySummary, drawerToggleButton, formControls, entryEditPanel,
@@ -215,7 +218,7 @@ public class WorkHoursView extends Div {
             formControls.deleteButton.addClassName(LumoUtility.Display.HIDDEN);
         }
 
-        formControls.saveButton.setText(entrySelected ? "UPDATE" : "SAVE");
+        formControls.saveButton.setText(entrySelected ? "UPDATE" : "ADD");
         formControls.resetButton.setText(entrySelected ? "CANCEL" : "RESET");
     }
 
@@ -248,9 +251,5 @@ public class WorkHoursView extends Div {
 
         if (this.currentWorkLog == null)
             formControls.setDefaults(userEmployee);
-    }
-
-    public void setCurrentWorkLog() {
-
     }
 }
