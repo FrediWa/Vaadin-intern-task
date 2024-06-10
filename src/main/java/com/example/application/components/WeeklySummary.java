@@ -29,7 +29,8 @@ public class WeeklySummary extends VerticalLayout {
     private final H4[] hours = new H4[5];
     private final BiFunction<LocalDate, Long, List<Integer>> getTimesForDay;
 
-    public WeeklySummary(Employee userEmployee, Function<Long, Employee> getEmployee,
+    public WeeklySummary(Employee userEmployee,
+            Function<Long, Employee> getEmployee,
             BiFunction<LocalDate, Long, List<Integer>> getTimesForDay) {
         this.getTimesForDay = getTimesForDay;
         setId("weekly-summary-panel");
@@ -40,7 +41,8 @@ public class WeeklySummary extends VerticalLayout {
                 .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
         weekDaysSummary = new HorizontalLayout();
-        welcomeMessage = new H2("Hi " + userEmployee.getFirstname() + ", it's week " + weekNumber);
+        welcomeMessage = new H2("Hi " + userEmployee.getFirstname()
+                + ", it's week " + weekNumber);
         subtitle = new Paragraph("Good job entering all your hours.");
 
         for (int i = 0; i < 5; i++) {
@@ -51,8 +53,8 @@ public class WeeklySummary extends VerticalLayout {
     }
 
     public static String localTimeToString(LocalTime time) {
-        return(String.format("%sh%smin", time.getHour(), time.getMinute()));
-    }   
+        return (String.format("%sh%smin", time.getHour(), time.getMinute()));
+    }
 
     public static LocalTime reduceMinutesList(List<Integer> minutesList) {
         int minutesReduced = minutesList.stream().reduce(0, Integer::sum);
@@ -78,7 +80,8 @@ public class WeeklySummary extends VerticalLayout {
             List<Integer> minutesList = getTimesForDay.apply(currentDate,
                     employee.getId());
 
-            hours[i].setText(WeeklySummary.localTimeToString(WeeklySummary.reduceMinutesList(minutesList)));
+            hours[i].setText(WeeklySummary.localTimeToString(
+                    WeeklySummary.reduceMinutesList(minutesList)));
             weekDayInfo = new Paragraph(weekDays[i] + " "
                     + currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
 
@@ -94,7 +97,19 @@ public class WeeklySummary extends VerticalLayout {
 
     public void updateWeekDaySummary(LocalDate date, String newMinutes) {
         int dayOfTheWeek = date.getDayOfWeek().getValue();
-        hours[dayOfTheWeek - 1].setText(newMinutes);
+
+        // As weekdays are modulo week, make sure that the updated entry is in
+        // the current week.
+        if (areSameWeek(date, LocalDate.now()))
+            hours[dayOfTheWeek - 1].setText(newMinutes);
+    }
+
+    public boolean areSameWeek(LocalDate d1, LocalDate d2) {
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        int w1 = d1.get(weekFields.weekOfWeekBasedYear());
+        int w2 = d2.get(weekFields.weekOfWeekBasedYear());
+        System.out.println(w1 == w2);
+        return (w1 == w2);
     }
 
     public void toggleSummary() {

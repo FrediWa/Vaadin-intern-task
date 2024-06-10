@@ -10,7 +10,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import com.example.test.Login;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-
 @Tag("playwright")
 public class test1 {
 
@@ -24,15 +23,17 @@ public class test1 {
     Page page = browser.newPage();
 
     @Test
-    public void logInAndOut() {        
+    public void logInAndOut() {
         page.navigate("http://localhost:" + port + "/");
         Login.login(page);
         assertThat(page.getByText("Log out")).isVisible();
         Login.logout(page);
-        assertThat(page.locator("[role=\"button\"]:has-text(\"Log in\")")).isVisible();
+        assertThat(page.locator("[role=\"button\"]:has-text(\"Log in\")"))
+                .isVisible();
     }
+
     @Test
-    public void addAndDelete() {        
+    public void addAndDelete() {
         page.navigate("http://localhost:" + port + "/");
         Login.login(page);
         page.locator("#input-vaadin-combo-box-28").fill("Fredi Wasström");

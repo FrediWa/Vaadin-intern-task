@@ -53,8 +53,10 @@ public class WorkLogService {
     @Transactional
     public void saveWorkLog(WorkLog newLog) {
         workLogRepository.save(newLog);
-        workLogRepository.syncArrivalTimes(newLog.getStartDate(), newLog.getStartTime(), newLog.getEmployee());
-        workLogRepository.syncAbsentTimes(newLog.getStartDate(), newLog.getAbsent(), newLog.getEmployee());
+        workLogRepository.syncArrivalTimes(newLog.getStartDate(),
+                newLog.getStartTime(), newLog.getEmployee());
+        workLogRepository.syncAbsentTimes(newLog.getStartDate(),
+                newLog.getAbsent(), newLog.getEmployee());
     }
 
     public void deleteOne(WorkLog workLog) {

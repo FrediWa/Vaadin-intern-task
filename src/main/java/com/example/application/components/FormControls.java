@@ -90,7 +90,8 @@ public class FormControls extends VerticalLayout {
 
         bindFields(binder);
         H3 fromControlTitle = new H3("Add entry");
-        add(fromControlTitle, upperFields, lowerEditFields, entryEditPanelFooter);
+        add(fromControlTitle, upperFields, lowerEditFields,
+                entryEditPanelFooter);
 
     }
 
@@ -132,7 +133,8 @@ public class FormControls extends VerticalLayout {
                 absentField);
         upperFields.add(upperEditFields, dailySummary);
         upperFields.setWidth("100%");
-        upperFields.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        upperFields.setJustifyContentMode(
+                FlexComponent.JustifyContentMode.BETWEEN);
         upperFields.addClassName("form-control-upper-fields");
 
     }
@@ -168,21 +170,25 @@ public class FormControls extends VerticalLayout {
         absentField.setValue(30);
     }
 
-    public void setSummaries(WorkLog workLog, BiFunction<LocalDate, Long, List<Integer>> getTimesForDay) {
+    public void setSummaries(WorkLog workLog,
+            BiFunction<LocalDate, Long, List<Integer>> getTimesForDay) {
         if (workLog == null) {
-                dailyDeparture.setValue(null);
-                dailyTotal.setValue("");
-                return;
+            dailyDeparture.setValue(null);
+            dailyTotal.setValue("");
+            return;
         }
 
-        LocalTime total = WeeklySummary.reduceMinutesList(getTimesForDay.apply(workLog.getStartDate(), workLog.getEmployee().getId()));
+        LocalTime total = WeeklySummary.reduceMinutesList(getTimesForDay
+                .apply(workLog.getStartDate(), workLog.getEmployee().getId()));
 
-        int totalMinutes = total.getMinute();
-        int totalHours = total.getHour();
+        LocalTime totalWithAbsent = total.plusMinutes(workLog.getAbsent());
+        int totalMinutes = totalWithAbsent.getMinute();
+        int totalHours = totalWithAbsent.getHour();
         LocalTime departure = workLog.getStartTime().plusHours(totalHours)
-                    .plusMinutes(totalMinutes);
+                .plusMinutes(totalMinutes);
         dailyDeparture.setValue(departure);
-        dailyTotal.setValue(String.format("%sh%smin", totalHours, totalMinutes));
+        dailyTotal
+                .setValue(String.format("%sh%smin", totalHours, totalMinutes));
     }
 
 }
