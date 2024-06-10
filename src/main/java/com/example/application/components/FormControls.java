@@ -51,7 +51,8 @@ public class FormControls extends VerticalLayout {
 
     public FormControls(BeanValidationBinder<WorkLog> binder,
             Supplier<List<Project>> getAllProjects,
-            Supplier<List<Employee>> getAllEmployees) {
+            Supplier<List<Employee>> getAllEmployees,
+            Employee currentEmployee) {
         employeeDropdown = new ComboBox<>();
         datePicker = new DatePicker();
         startTimePicker = new TimePicker();
@@ -87,6 +88,8 @@ public class FormControls extends VerticalLayout {
         entryEditPanelFooter
                 .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         entryEditPanelFooter.setWidth("100%");
+
+        setDefaults(currentEmployee);
 
         bindFields(binder);
         H3 fromControlTitle = new H3("Add entry");
@@ -166,8 +169,10 @@ public class FormControls extends VerticalLayout {
         binder.bind(absentField, WorkLog::getAbsent, WorkLog::setAbsent);
     }
 
-    public void setDefaults() {
+    public void setDefaults(Employee currentEmployee) {
         absentField.setValue(30);
+        datePicker.setValue(LocalDate.now());
+        employeeDropdown.setValue(currentEmployee);
     }
 
     public void setSummaries(WorkLog workLog,

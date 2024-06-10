@@ -63,7 +63,7 @@ public class WorkHoursView extends Div {
 
         binder = new BeanValidationBinder<>(WorkLog.class);
         formControls = new FormControls(binder, service::getAllProjects,
-                service::getAllEmployees);
+                service::getAllEmployees, userEmployee);
         weeklySummary = new WeeklySummary(userEmployee, service::getEmployee,
                 service::getTimesForDay);
         currentWorkLog = new WorkLog();
@@ -247,7 +247,7 @@ public class WorkHoursView extends Div {
         binder.readBean(this.currentWorkLog);
 
         if (this.currentWorkLog == null)
-            formControls.setDefaults();
+            formControls.setDefaults(userEmployee);
     }
 
     public void setCurrentWorkLog() {
