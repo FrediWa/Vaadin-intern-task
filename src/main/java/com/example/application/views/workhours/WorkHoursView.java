@@ -100,9 +100,8 @@ public class WorkHoursView extends Div {
                                 b.getEmployeeName(), sortOrder.getDirection());
                         break;
                     case "minutes":
-                        // TODO: compare minutes non-lexicographically
-                        comparison = compareValues("" + a.getMinutes(),
-                                "" + b.getMinutes(), sortOrder.getDirection());
+                        comparison = compareValues(a.getMinutes(),
+                                b.getMinutes(), sortOrder.getDirection());
                         break;
                     case "startDate":
                         comparison = compareValues(a.getStartDate().toString(),
@@ -198,6 +197,12 @@ public class WorkHoursView extends Div {
 
     private int compareValues(String a, String b, SortDirection direction) {
         int comparison = a.compareTo(b);
+        return (direction == SortDirection.ASCENDING) ? comparison
+                : -comparison;
+    }
+
+    private int compareValues(int a, int b, SortDirection direction) {
+        int comparison = a - b;
         return (direction == SortDirection.ASCENDING) ? comparison
                 : -comparison;
     }
