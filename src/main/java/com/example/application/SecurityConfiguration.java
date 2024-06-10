@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -31,8 +32,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration
-                extends VaadinWebSecurity {
+public class SecurityConfiguration extends VaadinWebSecurity {
 
     @Autowired
     private MyUserDetailsService myUserDetailsService;
@@ -53,10 +53,11 @@ public class SecurityConfiguration
 
         // Configure your static resources with public access before calling
         // super.configure(HttpSecurity) as it adds final anyRequest matcher
-        http.authorizeHttpRequests(auth -> auth.requestMatchers(new AntPathRequestMatcher("/public/**"))
-            .permitAll());
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers(new AntPathRequestMatcher("/public/**"))
+                .permitAll());
 
-        super.configure(http); 
+        super.configure(http);
 
         // This is important to register your login view to the
         // navigation access control mechanism:
@@ -75,27 +76,26 @@ public class SecurityConfiguration
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-        HttpSecurity http, 
-        UserDetailsService userDetailService) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http,
+            UserDetailsService userDetailService) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailService)
-                .and()
-                .build();
+                .userDetailsService(userDetailService).and().build();
     }
 
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new SimpleUrlAuthenticationFailureHandler() {
             @Override
-            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+            public void onAuthenticationFailure(HttpServletRequest request,
+                    HttpServletResponse response,
+                    AuthenticationException exception)
+                    throws IOException, ServletException {
                 response.getWriter().println("Incorrect password");
             }
         };
     }
     /**
-     * Demo UserDetailsManager which only provides two hardcoded
-     * in memory users and their roles.
-     * NOTE: This shouldn't be used in real world applications.
+     * Demo UserDetailsManager which only provides two hardcoded in memory users
+     * and their roles. NOTE: This shouldn't be used in real world applications.
      */
-   
+
 }

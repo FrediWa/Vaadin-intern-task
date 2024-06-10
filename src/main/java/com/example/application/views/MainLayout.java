@@ -102,15 +102,17 @@ public class MainLayout extends AppLayout {
                 Margin.NONE, Padding.NONE);
         nav.add(list);
         MyUserDetails userDetails = securityService.getAuthenticatedUser();
-        Employee userEmployee = service.getEmployee(userDetails.getEmployeeId());
-        UserInfo userInfo = new UserInfo(userEmployee.getName(), userDetails.getRole(), securityService::logout);
+        Employee userEmployee = service
+                .getEmployee(userDetails.getEmployeeId());
+        UserInfo userInfo = new UserInfo(userEmployee.getName(),
+                userDetails.getRole(), securityService::logout);
         nav.add(userInfo);
-    
+
         for (MenuItemInfo menuItem : createMenuItems()) {
             list.add(menuItem);
 
         }
-        
+
         layout.add(nav, userInfo);
         header.add(layout);
         return header;

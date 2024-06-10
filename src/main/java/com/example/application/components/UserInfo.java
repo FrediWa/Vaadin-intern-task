@@ -30,7 +30,7 @@ public class UserInfo extends HorizontalLayout {
 
         Div userNameAndRole = new Div();
         Button logoutButton = new Button("Log out", e -> logout.run());
-                    
+
         userNameAndRole.add(userName, userRole);
         add(logoutButton, userNameAndRole, userAvatar);
     }

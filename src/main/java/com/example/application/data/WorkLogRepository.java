@@ -21,11 +21,11 @@ public interface WorkLogRepository extends JpaRepository<WorkLog, Long> {
     @Query(value = "SELECT w FROM WorkLog w WHERE w.startDate = :date AND w.employee.id = :employeeId")
     List<WorkLog> getMinutesForDay(LocalDate date, long employeeId);
 
-    @Modifying 
+    @Modifying
     @Query(value = "UPDATE WorkLog w SET w.startTime = :time WHERE w.startDate = :date AND w.employee = :employee")
     void syncArrivalTimes(LocalDate date, LocalTime time, Employee employee);
 
-    @Modifying 
+    @Modifying
     @Query(value = "UPDATE WorkLog w SET w.absent = :absentTime WHERE w.startDate = :date AND w.employee = :employee")
     void syncAbsentTimes(LocalDate date, int absentTime, Employee employee);
 
