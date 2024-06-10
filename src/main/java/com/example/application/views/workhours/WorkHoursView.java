@@ -127,16 +127,15 @@ public class WorkHoursView extends Div {
         grid.setItems(workLogDataProvider);
 
         grid.asSingleSelect().addValueChangeListener(event -> {
-            boolean noSelection = (event.getValue() != null);
-            if (noSelection) {
+            boolean selection = (event.getValue() != null);
+            if (selection) {
                 populateForm(event.getValue());
                 currentWorkLog = event.getValue();
             } else {
                 resetForm();
             }
 
-            setFormButtons(noSelection);
-            updateSummaries();
+            setFormButtons(selection);
         });
 
         drawerToggleButton = new Button(
@@ -163,9 +162,9 @@ public class WorkHoursView extends Div {
         });
 
         formControls.resetButton.addClickListener(e -> {
+            grid.deselectAll();
             resetForm();
             updateSummaries();
-            grid.select(null);
         });
 
         formControls.saveButton.addClickListener(e -> {
@@ -184,7 +183,8 @@ public class WorkHoursView extends Div {
                 resetForm();
 
             } catch (ObjectOptimisticLockingFailureException
-                    | ValidationException | BindingException | ConstraintViolationException exception) {
+                    | ValidationException | BindingException
+                    | ConstraintViolationException exception) {
                 Notification.show("Missing data in fields")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 System.out.println(exception);

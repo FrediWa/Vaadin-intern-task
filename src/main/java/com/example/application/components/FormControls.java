@@ -173,6 +173,8 @@ public class FormControls extends VerticalLayout {
         absentField.setValue(30);
         datePicker.setValue(LocalDate.now());
         employeeDropdown.setValue(currentEmployee);
+
+        setSummaries(null, null);
     }
 
     public void setSummaries(WorkLog workLog,
